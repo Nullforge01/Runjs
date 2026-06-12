@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RunJS — Learn JavaScript by Doing</title>
+  <meta name="description" content="Master JavaScript with 25 interactive lessons, live coding, quizzes, and a final exam. Get certified. 100% free.">
+  
+  <!-- OpenGraph -->
+  <meta property="og:title" content="RunJS — Learn JavaScript by Doing">
+  <meta property="og:description" content="25 interactive JS lessons. Live editor. Earn XP. Get certified.">
+  <meta property="og:type" content="website">
+  
+  <!-- Fonts: Outfit + Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Favicon: text RJ for now -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230A0A0F'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%237C3AED' font-family='Outfit' font-weight='800'>RJ</text></svg>">
+</head>
+<body>
+  <!-- App Layout: Sidebar + Main -->
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Sidebar: Hidden on homepage until logged in -->
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation" hidden>
+      <!-- Sidebar injected by js/sidebar.js when user starts -->
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Nav -->
+      <header class="nav">
+        <div class="nav-inner">
+          <a href="index.html" class="nav-brand">
+            Run<span>JS</span>
+          </a>
+          
+          <div class="nav-actions">
+            <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">
+              🌙
+            </button>
+            <button class="btn-ghost" id="loginBtn">Log In</button>
+            <a href="signup.html" class="btn-primary">Sign Up</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <h1 class="hero-title">
+              Learn JavaScript by 
+              <span class="text-gradient">Actually Coding</span>
+            </h1>
+            <p class="hero-subtitle">
+              25 interactive lessons. Live editor with instant feedback. 
+              Quizzes, XP, streaks, and a final exam. Get certified for free.
+            </p>
+            
+            <div class="hero-cta">
+              <a href="lessons.html" class="btn-primary btn-lg" id="startLearningBtn">
+                Start Learning Free
+              </a>
+              <button class="btn-ghost btn-lg" id="guestBtn">
+                Continue as Guest
+              </button>
+            </div>
+
+            <div class="hero-stats">
+              <div class="stat">
+                <span class="stat-number">25</span>
+                <span class="stat-label">Lessons</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Free</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Setup</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="code-window">
+              <div class="code-window-header">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="filename">lesson-01.js</span>
+              </div>
+              <pre class="code-preview"><code><span class="token-comment">// Welcome to RunJS</span>
+<span class="token-keyword">const</span> <span class="token-variable">greeting</span> <span class="token-operator">=</span> <span class="token-string">'Hello, World!'</span>;
+
+<span class="token-keyword">function</span> <span class="token-function">startJourney</span><span class="token-punctuation">()</span> <span class="token-punctuation">{</span>
+  <span class="token-builtin">console</span><span class="token-punctuation">.</span><span class="token-function">log</span><span class="token-punctuation">(</span>greeting<span class="token-punctuation">)</span>;
+  <span class="token-keyword">return</span> <span class="token-string">'Level 1 Unlocked ⚡'</span>;
+<span class="token-punctuation">}</span>
+
+<span class="token-function">startJourney</span><span class="token-punctuation">()</span>;</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Grid -->
+      <section class="features">
+        <div class="container">
+          <h2 class="section-title">Why RunJS?</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Live Code Editor</h3>
+              <p>VSCode-powered editor in your browser. Run code instantly. Zero setup.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h3>Learn by Doing</h3>
+              <p>Every lesson = theory + coding challenges + tests. Pass to unlock next.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔥</div>
+              <h3>Streaks & XP</h3>
+              <p>Earn XP, level up, maintain streaks. Compete on the leaderboard.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📜</div>
+              <h3>Get Certified</h3>
+              <p>Pass the final exam to download a PDF certificate with verification ID.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-section">
+        <div class="container">
+          <div class="cta-card">
+            <h2>Ready to master JavaScript?</h2>
+            <p>Join thousands learning JS the interactive way. No credit card needed.</p>
+            <a href="lessons.html" class="btn-primary btn-lg">Start Lesson 1 Now</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <div class="nav-brand">Run<span>JS</span></div>
+              <p>Learn JavaScript by doing.</p>
+            </div>
+            <div class="footer-links">
+              <h4>Product</h4>
+              <a href="lessons.html">Lessons</a>
+              <a href="playground.html">Playground</a>
+              <a href="leaderboard.html">Leaderboard</a>
+            </div>
+            <div class="footer-links">
+              <h4>Company</h4>
+              <a href="https://github.com" target="_blank">GitHub</a>
+              <a href="https://discord.com" target="_blank">Discord</a>
+              <a href="settings.html">Settings</a>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <p>Built with ⚡ by <a href="#" class="footer-studio">Wild Lirt Studio</a></p>
+            <p>© 2026 RunJS. 100% Free & Open Source.</p>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Core JS -->
+  <script type="module" src="js/core.js"></script>
+</body>
+</html>
