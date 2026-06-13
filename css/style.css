@@ -1,3 +1,26 @@
+#editor {
+  height: 500px;
+  min-height: 500px;
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #1e1e1e;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Force Monaco to respect container size */
+#editor .monaco-editor .overflow-guard {
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  #editor {
+    height: 400px;
+    min-height: 400px;
+  }
+}
+
+
 /* Monaco Editor Container Fix */
 #editor {
   height: 500px;
