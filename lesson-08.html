@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 08: Events & Forms — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="8">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 8: Events & Forms</h1>
+      <span class="badge">medium · 45 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. Events: User Actions</h2>
+      <p>Events fire when users interact: click, type, submit, hover. You listen for them and run code in response.</p>
+
+      <pre><code>const btn = document.getElementById("btn");
+
+btn.addEventListener("click", () => {
+  console.log("Clicked!");
+});</code></pre>
+
+      <h2>2. Common Event Types</h2>
+      <table>
+        <tr><th>Event</th><th>Fires When</th><th>Common Element</th></tr>
+        <tr><td><code>click</code></td><td>Mouse click</td><td>button, div</td></tr>
+        <tr><td><code>input</code></td><td>User types/changes value</td><td>input, textarea</td></tr>
+        <tr><td><code>submit</code></td><td>Form submitted</td><td>form</td></tr>
+        <tr><td><code>change</code></td><td>Value changed + blur</td><td>select, checkbox</td></tr>
+        <tr><td><code>keydown</code></td><td>Key pressed</td><td>document, input</td></tr>
+      </table>
+
+      <h2>3. The Event Object</h2>
+      <p>Every listener gets an <code>event</code> object with details.</p>
+      <pre><code>document.addEventListener("click", (e) => {
+  console.log(e.target); // What was clicked
+  console.log(e.clientX, e.clientY); // Mouse position
+});
+
+input.addEventListener("keydown", (e) => {
+  console.log(e.key); // "Enter", "a", "Escape"
+  if (e.key === "Enter") {
+    console.log("Enter pressed");
+  }
+});</code></pre>
+
+      <h2>4. Forms & preventDefault</h2>
+      <p>Forms reload the page by default on submit. Stop it with <code>preventDefault()</code>.</p>
+      <pre><code>&lt;form id="login"&gt;
+  &lt;input id="user" type="text"&gt;
+  &lt;button type="submit"&gt;Login&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+const form = document.getElementById("login");
+const input = document.getElementById("user");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault(); // Stop page reload
+  const username = input.value.trim();
+  if (username === "") {
+    alert("Enter username");
+    return;
+  }
+  console.log("Logging in:", username);
+});
+&lt;/script&gt;</code></pre>
+
+      <h2>5. Form Validation Patterns</h2>
+      <pre><code>const emailInput = document.getElementById("email");
+const errorBox = document.getElementById("error");
+
+emailInput.addEventListener("input", () => {
+  const email = emailInput.value;
+  if (!email.includes("@")) {
+    errorBox.textContent = "Invalid email";
+  } else {
+    errorBox.textContent = "";
+  }
+});</code></pre>
+
+      <h2>6. Event Delegation</h2>
+      <p>Listen on parent instead of 100 child buttons. Works for dynamic elements.</p>
+      <pre><code>&lt;ul id="list"&gt;
+  &lt;li&gt;&lt;button&gt;Delete 1&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;button&gt;Delete 2&lt;/button&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;script&gt;
+const list = document.getElementById("list");
+
+list.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    e.target.parentElement.remove(); // Delete the li
+  }
+});
+&lt;/script&gt;</code></pre>
+
+      <h2>7. Common Mistakes</h2>
+      <ul>
+        <li><strong>Forgetting preventDefault:</strong> Form submits and page reloads, JS state lost</li>
+        <li><strong>Multiple listeners:</strong> Adding listener in a loop without removing old ones stacks them</li>
+        <li><strong>this in arrow functions:</strong> Arrow functions don’t bind <code>this</code>. Use <code>e.target</code> instead</li>
+        <li><strong>Accessing.value too early:</strong> Get <code>input.value</code> inside the event, not outside</li>
+      </ul>
+
+      <h2>8. Real Example: Live Search</h2>
+      <pre><code>&lt;input id="search" placeholder="Type to filter"&gt;
+&lt;ul id="items"&gt;
+  &lt;li&gt;Apple&lt;/li&gt;
+  &lt;li&gt;Banana&lt;/li&gt;
+  &lt;li&gt;Cherry&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;script&gt;
+const search = document.getElementById("search");
+const items = document.querySelectorAll("#items li");
+
+search.addEventListener("input", () => {
+  const term = search.value.toLowerCase();
+  items.forEach(li => {
+    const match = li.textContent.toLowerCase().includes(term);
+    li.style.display = match? "" : "none";
+  });
+});
+&lt;/script&gt;</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Attach events with <code>addEventListener</code></li>
+        <li>Use the <code>event</code> object and <code>e.target</code></li>
+        <li>Stop form reload with <code>preventDefault()</code></li>
+        <li>Read form values with <code>.value</code></li>
+        <li>Validate input on <code>input</code> or <code>submit</code></li>
+        <li>Use event delegation for dynamic elements</li>
+      </ul>
+    </section>
+
+    <a href="/editor-08.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+      </html>
