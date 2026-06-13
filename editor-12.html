@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Final Project: Todo App — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .todo-app { max-width: 500px; margin: 0 auto; }
+    .todo-input { display: flex; gap: 8px; margin-bottom: 16px; }
+    .todo-input input { flex: 1; padding: 8px; }
+    #todo-list { list-style: none; padding: 0; }
+    #todo-list li { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      padding: 8px; 
+      border: 1px solid var(--border); 
+      margin-bottom: 4px;
+      border-radius: 4px;
+    }
+    #todo-list li.done span { text-decoration: line-through; opacity: 0.6; }
+    #todo-list li span { flex: 1; cursor: pointer; }
+    .filters { display: flex; gap: 8px; margin: 16px 0; }
+    .filters button.active { background: var(--primary); color: white; }
+    .delete { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body data-lesson-id="12">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Build Todo App</h2>
+      <a href="/lesson-12.html" class="btn btn-ghost">← Read Spec Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Goal:</strong> Implement the full todo app. All features must work and persist on reload.</p>
+      <p>Use the starter code. Fill in the missing functions.</p>
+    </div>
+
+    <div class="todo-app">
+      <div class="todo-input">
+        <input id="new-todo" type="text" placeholder="What needs to be done?">
+        <button id="add-btn">Add</button>
+      </div>
+      
+      <ul id="todo-list"></ul>
+      
+      <div class="filters">
+        <button data-filter="all" class="active">All</button>
+        <button data-filter="active">Active</button>
+        <button data-filter="completed">Completed</button>
+      </div>
+      
+      <p><span id="count">0</span> items left</p>
+    </div>
+
+    <div id="editor" style="height:500px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run & Test App</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 12,
+      starterCode: `// State
+let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+let filter = "all";
+
+function saveTodos() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function render() {
+  // 1. Filter todos based on 'filter' variable
+  // 2. Generate HTML for #todo-list
+  // 3. Update #count with active todos left
+}
+
+function addTodo(text) {
+  // 1. Create todo object with id, text, done: false
+  // 2. Push to todos array
+  // 3. Save and render
+}
+
+function toggleTodo(id) {
+  // 1. Find todo by id
+  // 2. Toggle done property
+  // 3. Save and render
+}
+
+function deleteTodo(id) {
+  // 1. Filter out todo by id
+  // 2. Save and render
+}
+
+// Event listeners - fill these in
+document.getElementById('add-btn').onclick = () => {
+  const input = document.getElementById('new-todo');
+  // Add todo if input not empty
+};
+
+document.getElementById('todo-list').onclick = (e) => {
+  // Use event delegation for toggle and delete
+};
+
+document.querySelectorAll('.filters button').forEach(btn => {
+  btn.onclick = () => {
+    // Set filter and re-render
+  };
+});
+
+// Initial render
+render();`,
+      hints: [
+        "addTodo: todos.push({id: Date.now(), text, done: false}); saveTodos(); render();",
+        "toggleTodo: const t = todos.find(t => t.id === id); t.done = !t.done;",
+        "Event delegation: check e.target.classList.contains('delete') vs closest('li')"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      localStorage.removeItem('todos');
+      let pass = true;
+      let msg = '';
+      
+      try {
+        // Reset app DOM
+        document.getElementById('todo-list').innerHTML = '';
+        document.getElementById('new-todo').value = '';
+        eval(code); // Run user app code
+        
+        // Test 1: Add todo
+        document.getElementById('new-todo').value = 'Test todo';
+        document.getElementById('add-btn').click();
+        if (document.querySelectorAll('#todo-list li').length !== 1) {
+          pass = false; msg = 'Add button should create todo';
+        }
+        
+        // Test 2: Persist
+        const saved = JSON.parse(localStorage.getItem('todos') || '[]');
+        if (saved.length !== 1 || saved[0].text !== 'Test todo') {
+          pass = false; msg = 'Todos should save to localStorage';
+        }
+        
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">Core tests passed! ✓ Test all features manually.</div>';
+        setTimeout(() => location.href = '/quiz-12.html', 1500);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
