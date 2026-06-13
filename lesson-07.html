@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 07: DOM Manipulation — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="7">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 7: DOM Manipulation</h1>
+      <span class="badge">medium · 45 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. What is the DOM?</h2>
+      <p>DOM = Document Object Model. The browser turns your HTML into a tree of objects that JS can read and change. Every tag is a node you can grab and edit.</p>
+      
+      <pre><code>&lt;h1 id="title"&gt;Hello&lt;/h1&gt;
+// Becomes an object you can access with JS</code></pre>
+
+      <h2>2. Selecting Elements</h2>
+      <pre><code>// By ID - fastest, returns 1 element
+const title = document.getElementById("title");
+
+// By CSS selector - flexible, returns first match
+const btn = document.querySelector(".btn-primary");
+
+// By CSS selector - returns all matches as NodeList
+const items = document.querySelectorAll("li");</code></pre>
+      <p><strong>Rule:</strong> Use <code>getElementById</code> for single IDs. Use <code>querySelector</code> for everything else.</p>
+
+      <h2>3. Changing Content</h2>
+      <pre><code>const heading = document.getElementById("title");
+
+// Text only - safe, no HTML parsing
+heading.textContent = "New Title";
+
+// HTML - renders tags, but risky with user input
+heading.innerHTML = "New &lt;span&gt;Title&lt;/span&gt;";</code></pre>
+      <p><strong>Security:</strong> Never set <code>innerHTML</code> with user input. XSS risk. Use <code>textContent</code>.</p>
+
+      <h2>4. Changing Attributes & Styles</h2>
+      <pre><code>const img = document.querySelector("img");
+
+// Attributes
+img.src = "/new-logo.png";
+img.setAttribute("alt", "Logo");
+img.getAttribute("src"); // "/new-logo.png"
+
+// Classes
+const box = document.getElementById("box");
+box.classList.add("active");
+box.classList.remove("hidden");
+box.classList.toggle("dark"); // add if missing, remove if present
+
+// Inline styles
+box.style.backgroundColor = "red";
+box.style.fontSize = "20px";</code></pre>
+
+      <h2>5. Creating & Removing Elements</h2>
+      <pre><code>// Create
+const newDiv = document.createElement("div");
+newDiv.textContent = "I'm new";
+newDiv.classList.add("card");
+
+// Add to page
+document.body.appendChild(newDiv); // add to end
+const parent = document.getElementById("container");
+parent.prepend(newDiv); // add to start
+
+// Remove
+newDiv.remove(); // modern way
+// old way: parent.removeChild(newDiv);</code></pre>
+
+      <h2>6. Events — Making Pages Interactive</h2>
+      <pre><code>const button = document.getElementById("saveBtn");
+
+button.addEventListener("click", function() {
+  console.log("Button clicked!");
+});
+
+// Arrow function version
+button.addEventListener("click", () => {
+  alert("Saved!");
+});
+
+// Common events: click, input, submit, mouseover, keydown</code></pre>
+
+      <h2>7. Reading Form Input</h2>
+      <pre><code>&lt;input id="username" type="text"&gt;
+&lt;button id="submit"&gt;Go&lt;/button&gt;
+
+&lt;script&gt;
+const input = document.getElementById("username");
+const btn = document.getElementById("submit");
+
+btn.addEventListener("click", () => {
+  const name = input.value; // .value for inputs
+  console.log(`Hello ${name}`);
+});
+&lt;/script&gt;</code></pre>
+
+      <h2>8. Common Mistakes</h2>
+      <ul>
+        <li><strong>Null error:</strong> <code>document.getElementById("oops").textContent</code> crashes if ID doesn't exist. Check first.</li>
+        <li><strong>Script runs too early:</strong> Put <code>&lt;script&gt;</code> before <code>&lt;/body&gt;</code> or use <code>defer</code></li>
+        <li><strong>NodeList vs Array:</strong> <code>querySelectorAll</code> returns NodeList. Use <code>forEach</code> or spread <code>[...items]</code></li>
+      </ul>
+
+      <h2>9. Real Example: Todo Add</h2>
+      <pre><code>&lt;input id="task"&gt;
+&lt;button id="add"&gt;Add&lt;/button&gt;
+&lt;ul id="list"&gt;&lt;/ul&gt;
+
+&lt;script&gt;
+const input = document.getElementById("task");
+const btn = document.getElementById("add");
+const list = document.getElementById("list");
+
+btn.addEventListener("click", () => {
+  if (input.value.trim() === "") return;
+  
+  const li = document.createElement("li");
+  li.textContent = input.value;
+  list.appendChild(li);
+  input.value = ""; // clear input
+});
+&lt;/script&gt;</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Select elements with <code>getElementById</code> and <code>querySelector</code></li>
+        <li>Change <code>textContent</code> and <code>innerHTML</code> safely</li>
+        <li>Add/remove classes with <code>classList</code></li>
+        <li>Create and append elements</li>
+        <li>Handle <code>click</code> events and read <code>input.value</code></li>
+      </ul>
+    </section>
+
+    <a href="/editor-07.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+  </html>
