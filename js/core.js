@@ -1,4 +1,10 @@
-/* ===================================
+const DEFAULT_STATE = {
+  //... existing
+  examCompleted: false,
+  examScore: 0,
+  examGrade: '',
+  examDate: null
+}/* ===================================
    RunJS v2.1 - Core System
    Theme • Auth • Toasts • State
    =================================== */
