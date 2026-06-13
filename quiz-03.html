@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz: Conditionals — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="3">
+  <main class="lesson-stage">
+    <h2>Mastery Check: Conditionals</h2>
+    
+    <div class="quiz-block">
+      <div class="quiz-q">1. What does <code>5 === "5"</code> return?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="0" data-correct="false">true</button>
+        <button class="quiz-option" data-q="0" data-correct="true">false</button>
+        <button class="quiz-option" data-q="0" data-correct="false">error</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">2. Which operator means "OR"?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="1" data-correct="false">&&</button>
+        <button class="quiz-option" data-q="1" data-correct="true">||</button>
+        <button class="quiz-option" data-q="1" data-correct="false">!</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">3. What’s the output? <code>const x = 0; if (x) { console.log("yes") } else { console.log("no") }</code></div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="2" data-correct="false">yes</button>
+        <button class="quiz-option" data-q="2" data-correct="true">no</button>
+        <button class="quiz-option" data-q="2" data-correct="false">error</button>
+      </div>
+    </div>
+
+    <div id="quiz-feedback"></div>
+  </main>
+
+  <script>
+    let score = 0;
+    const totalQ = 3;
+    const answered = new Set();
+
+    document.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.onclick = () => {
+        const q = btn.dataset.q;
+        if (answered.has(q)) return;
+        answered.add(q);
+        
+        const correct = btn.dataset.correct === 'true';
+        btn.style.borderColor = correct ? '#22c55e' : '#ef4444';
+        
+        if (correct) score++;
+        
+        if (answered.size === totalQ) {
+          const feedback = document.getElementById('quiz-feedback');
+          if (score === totalQ) {
+            feedback.innerHTML = `<div class="success">Perfect! ${score}/${totalQ} · +30 XP · Lesson Mastered!</div>`;
+            const completed = JSON.parse(localStorage.getItem('runjs_completed') || '[]');
+            if (!completed.includes(3)) {
+              completed.push(3);
+              localStorage.setItem('runjs_completed', JSON.stringify(completed));
+              localStorage.setItem('runjs_xp', (parseInt(localStorage.getItem('runjs_xp') || '0') + 30));
+            }
+            setTimeout(() => location.href = '/lesson-04.html', 2000);
+          } else {
+            feedback.innerHTML = `<div class="error">You got ${score}/${totalQ}. Review notes and try again.</div>
+            <a href="/lesson-03.html" class="btn btn-primary" style="margin-top:12px">Review Notes</a>`;
+          }
+        }
+      };
+    });
+  </script>
+</body>
+</html>
