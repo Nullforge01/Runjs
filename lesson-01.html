@@ -1,160 +1,93 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lesson 01: Variables & Data Types — RunJS</title>
-  <meta name="description" content="Learn JavaScript variables: let, const, strings, numbers, booleans. Interactive coding lesson with tests.">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230A0A0F'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%237C3AED' font-family='Outfit' font-weight='800'>RJ</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body data-lesson-id="1">
-  <div class="app-layout" id="appLayout">
-    
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar" aria-label="Main navigation" hidden></aside>
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 1: Variables & Data Types</h1>
+      <span class="badge">easy · 25 XP</span>
+    </div>
 
-    <main class="main-content">
-      <!-- Nav -->
-      <header class="nav">
-        <div class="nav-inner">
-          <div style="display:flex;align-items:center;gap:1rem">
-            <button class="btn-icon" data-sidebar-toggle aria-label="Toggle sidebar">☰</button>
-            <a href="lessons.html" class="btn-ghost">← All Lessons</a>
-          </div>
-          
-          <div class="nav-actions">
-            <button class="btn-icon" id="bookmarkLesson" aria-label="Bookmark lesson">☆</button>
-            <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">🌙</button>
-            <a href="playground.html" class="btn-ghost">Playground</a>
-          </div>
-        </div>
-      </header>
+    <section class="notes">
+      <h2>1. What Are Variables?</h2>
+      <p>Variables are containers that store data values. Think of them as labeled boxes where you keep stuff for later.</p>
+      
+      <pre><code>let userName = "Alex";
+const userAge = 25;</code></pre>
 
-      <!-- Lesson Container -->
-      <div class="lesson-container">
-        
-        <!-- Left: Instructions -->
-        <section class="lesson-sidebar">
-          <div class="lesson-header">
-            <div class="lesson-badge">
-              <span id="lessonNumber">Lesson 01</span>
-              <span id="lessonDifficulty" class="lesson-difficulty easy">Easy</span>
-            </div>
-            <h1 class="lesson-title" id="lessonTitle">Variables & Data Types</h1>
-            <p class="lesson-desc" id="lessonDesc">Learn let, const, strings, numbers, booleans</p>
-          </div>
+      <h2>2. Declaring Variables: let vs const vs var</h2>
+      <table>
+        <tr><th>Keyword</th><th>Reassign?</th><th>Scope</th><th>Use When</th></tr>
+        <tr><td><code>const</code></td><td>No</td><td>Block</td><td>Value won't change. Default choice.</td></tr>
+        <tr><td><code>let</code></td><td>Yes</td><td>Block</td><td>Value will change later.</td></tr>
+        <tr><td><code>var</code></td><td>Yes</td><td>Function</td><td>Avoid. Old, causes bugs.</td></tr>
+      </table>
 
-          <div class="lesson-tabs">
-            <button class="lesson-tab active" data-tab="instructions">Instructions</button>
-            <button class="lesson-tab" data-tab="hints">Hints</button>
-            <button class="lesson-tab" data-tab="solution">Solution</button>
-          </div>
+      <p><strong>Rule:</strong> Use <code>const</code> by default. Use <code>let</code> only if you plan to reassign. Never use <code>var</code>.</p>
 
-          <div class="lesson-content">
-            <!-- Instructions Tab -->
-            <div class="tab-panel active" id="instructionsPanel">
-              <h3>Objectives</h3>
-              <ul class="objectives-list" id="objectivesList">
-                <li class="skeleton-text"></li>
-                <li class="skeleton-text"></li>
-              </ul>
+      <h2>3. Primitive Data Types</h2>
+      
+      <h3>String — Text</h3>
+      <p>Any text wrapped in quotes. Single <code>' '</code>, double <code>" "</code>, or backticks <code>` `</code>.</p>
+      <pre><code>const firstName = "Sarah";
+const lastName = 'Connor';
+const greeting = `Hello, ${firstName}`; // Template literal</code></pre>
 
-              <h3>Your Task</h3>
-              <div class="task-description" id="taskDescription">
-                <div class="skeleton-text"></div>
-                <div class="skeleton-text"></div>
-              </div>
-            </div>
+      <h3>Number — Math Values</h3>
+      <p>Integers and decimals. No quotes.</p>
+      <pre><code>const age = 30;
+const price = 19.99;
+const negative = -5;</code></pre>
 
-            <!-- Hints Tab -->
-            <div class="tab-panel" id="hintsPanel" hidden>
-              <h3>Hints</h3>
-              <div class="hints-list" id="hintsList"></div>
-              <button class="btn-ghost btn-sm" id="revealHintBtn">Reveal Next Hint</button>
-            </div>
+      <h3>Boolean — True/False</h3>
+      <p>Used for logic, conditions, flags.</p>
+      <pre><code>const isLoggedIn = true;
+const hasPermission = false;</code></pre>
 
-            <!-- Solution Tab -->
-            <div class="tab-panel" id="solutionPanel" hidden>
-              <h3>Solution</h3>
-              <p class="warning-text">⚠️ Try solving it yourself first! You earn more XP.</p>
-              <pre class="solution-code" id="solutionCode"><code>Loading...</code></pre>
-              <button class="btn-primary btn-sm" id="copySolutionBtn">Copy Solution</button>
-            </div>
-          </div>
+      <h3>Undefined & Null — Empty</h3>
+      <pre><code>let x; // x is undefined - declared but no value
+const y = null; // y is null - intentionally empty</code></pre>
 
-          <!-- Lesson Nav -->
-          <div class="lesson-footer">
-            <button class="btn-ghost" id="prevLessonBtn" disabled>← Previous</button>
-            <button class="btn-primary" id="nextLessonBtn" disabled>Next Lesson →</button>
-          </div>
-        </section>
+      <h2>4. Common Mistakes</h2>
+      <ul>
+        <li><strong>Forgetting quotes:</strong> <code>const name = Alex</code> → Error. Should be <code>"Alex"</code></li>
+        <li><strong>Reassigning const:</strong> <code>const x = 1; x = 2;</code> → Error</li>
+        <li><strong>Numbers in quotes:</strong> <code>"5"</code> is a string, not number. <code>"5" + 1 = "51"</code></li>
+      </ul>
 
-        <!-- Right: Editor + Output -->
-        <section class="lesson-workspace">
-          
-          <!-- Editor -->
-          <div class="editor-panel">
-            <div class="editor-header">
-              <div class="editor-tabs">
-                <button class="editor-tab active">
-                  <span>index.js</span>
-                </button>
-              </div>
-              <div class="editor-actions">
-                <button class="btn-icon" id="resetCodeBtn" title="Reset code">↺</button>
-                <button class="btn-icon" id="formatCodeBtn" title="Format code">≡</button>
-                <button class="btn-primary btn-sm" id="runCodeBtn">
-                  ▶ Run Code
-                </button>
-              </div>
-            </div>
-            <div class="editor-container" id="editorContainer">
-              <!-- Monaco Editor injected here -->
-              <div class="editor-loading">Loading editor...</div>
-            </div>
-          </div>
+      <h2>5. Real Examples</h2>
+      <pre><code>// User profile
+const username = "dev_pro";
+let postCount = 0;
+const isVerified = true;
 
-          <!-- Output + Tests -->
-          <div class="output-panel">
-            <div class="output-tabs">
-              <button class="output-tab active" data-output="console">Console</button>
-              <button class="output-tab" data-output="tests">Tests <span class="test-badge" id="testBadge">0/3</span></button>
-            </div>
+// Product
+const productName = "Laptop";
+const productPrice = 999;
+let inStock = true;
 
-            <!-- Console Output -->
-            <div class="output-content active" id="consoleOutput">
-              <div class="console-empty">Click "Run Code" to see output</div>
-            </div>
+// Update values
+postCount = postCount + 1; // let allows this
+// username = "hacker"; // Error: const can't change</code></pre>
+    </section>
 
-            <!-- Test Results -->
-            <div class="output-content" id="testsOutput" hidden>
-              <div class="tests-list" id="testsList">
-                <div class="test-empty">Run your code to check tests</div>
-              </div>
-            </div>
-          </div>
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Declare variables with <code>const</code> and <code>let</code></li>
+        <li>Know when to use <code>const</code> vs <code>let</code></li>
+        <li>Identify String, Number, Boolean types</li>
+        <li>Avoid <code>var</code> and common errors</li>
+      </ul>
+    </section>
 
-        </section>
-      </div>
-    </main>
-  </div>
-
-  <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <!-- Monaco Editor CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
-  
-  <!-- Scripts -->
-  <script type="module" src="js/core.js"></script>
-  <script type="module" src="js/sidebar.js"></script>
-  <script type="module" src="js/lesson.js"></script>
-  <script type="module" src="js/lesson-engine.js"></script>
+    <a href="/editor-01.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
 </body>
-    </html>
+</html>
