@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Conditionals — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="3">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Conditionals</h2>
+      <a href="/lesson-03.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+    
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create a function <code>canDrive</code> that:</p>
+      <ol>
+        <li>Takes <code>age</code> and <code>hasLicense</code> parameters</li>
+        <li>Returns <code>true</code> if age >= 16 AND hasLicense is true</li>
+        <li>Returns <code>false</code> otherwise</li>
+      </ol>
+    </div>
+
+    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
+    
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 3,
+      starterCode: "// Create function canDrive(age, hasLicense)\n// Return true if age >= 16 AND hasLicense is true\n\n",
+      solution: "function canDrive(age, hasLicense) {\n  return age >= 16 && hasLicense;\n}",
+      hints: [
+        "Start: function canDrive(age, hasLicense) { }",
+        "Use && to check both conditions: age >= 16 && hasLicense",
+        "Return the result directly: return age >= 16 && hasLicense;"
+      ]
+    };
+    
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return canDrive;');
+        const canDrive = userCode();
+        if (typeof canDrive !== 'function') { pass = false; msg = 'canDrive should be a function'; }
+        else if (canDrive(18, true) !== true) { pass = false; msg = 'canDrive(18, true) should return true'; }
+        else if (canDrive(15, true) !== false) { pass = false; msg = 'canDrive(15, true) should return false'; }
+        else if (canDrive(20, false) !== false) { pass = false; msg = 'canDrive(20, false) should return false'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+      
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-03.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
