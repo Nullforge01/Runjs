@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Variables — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="1">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Variables & Data Types</h2>
+      <a href="/lesson-01.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+    
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create 3 variables:</p>
+      <ol>
+        <li><code>name</code> - your name as a string. Use <code>const</code></li>
+        <li><code>age</code> - your age as a number. Use <code>const</code></li>
+        <li><code>isLearning</code> - set to <code>true</code>. Use <code>let</code></li>
+      </ol>
+    </div>
+
+    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
+    
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 1,
+      starterCode: "// Create name (string), age (number), isLearning (boolean)\n// Remember: const for fixed, let for changeable\n\n",
+      solution: "const name = 'Alex';\nconst age = 25;\nlet isLearning = true;",
+      hints: [
+        "Start: const name = 'YourName';",
+        "Numbers don't need quotes: const age = 25;",
+        "Booleans are true/false without quotes: let isLearning = true;"
+      ]
+    };
+    
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return {name, age, isLearning};');
+        const res = userCode();
+        if (typeof res.name !== 'string') { pass = false; msg = 'name should be a string'; }
+        else if (typeof res.age !== 'number') { pass = false; msg = 'age should be a number'; }
+        else if (res.isLearning !== true) { pass = false; msg = 'isLearning should be true'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+      
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-01.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+  </html>
