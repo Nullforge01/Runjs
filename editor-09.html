@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Array Methods — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="9">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Array Methods</h2>
+      <a href="/lesson-09.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create function <code>getAdultNames</code> that:</p>
+      <ol>
+        <li>Takes array of user objects: <code>[{name: "Alex", age: 20},...]</code></li>
+        <li>Filters users with age >= 18</li>
+        <li>Maps to array of names only</li>
+        <li>Returns that array</li>
+      </ol>
+      <p>Example: <code>getAdultNames([{name:"Ann",age:17},{name:"Bob",age:20}])</code> → <code>["Bob"]</code></p>
+    </div>
+
+    <div id="editor" style="height:400px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 9,
+      starterCode: "// Create function getAdultNames(users)\n// 1. filter age >= 18\n// 2. map to names\n\nfunction getAdultNames(users) {\n \n}",
+      solution: "function getAdultNames(users) {\n return users\n.filter(u => u.age >= 18)\n.map(u => u.name);\n}",
+      hints: [
+        "Start: return users.filter(u => u.age >= 18)",
+        "Chain map:.map(u => u.name)",
+        "Combined: return users.filter(...).map(...);"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return getAdultNames;');
+        const getAdultNames = userCode();
+        const test1 = [{name:"Ann",age:17},{name:"Bob",age:20},{name:"Cat",age:15}];
+        const test2 = [{name:"Dan",age:30}];
+        const test3 = [];
+
+        if (typeof getAdultNames!== 'function') throw new Error('getAdultNames should be a function');
+        const r1 = getAdultNames(test1);
+        const r2 = getAdultNames(test2);
+        const r3 = getAdultNames(test3);
+
+        if (JSON.stringify(r1)!== '["Bob"]') { pass = false; msg = 'Should return ["Bob"] for mixed ages'; }
+        else if (JSON.stringify(r2)!== '["Dan"]') { pass = false; msg = 'Should return ["Dan"] for single adult'; }
+        else if (JSON.stringify(r3)!== '[]') { pass = false; msg = 'Should return [] for empty array'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-09.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
