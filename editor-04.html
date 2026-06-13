@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Loops — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="4">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Loops</h2>
+      <a href="/lesson-04.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+    
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create a function <code>sumToN</code> that:</p>
+      <ol>
+        <li>Takes a number <code>n</code></li>
+        <li>Uses a <code>for</code> loop to add all numbers from 1 to n</li>
+        <li>Returns the total sum</li>
+      </ol>
+      <p>Example: <code>sumToN(5)</code> should return <code>15</code> because 1+2+3+4+5 = 15</p>
+    </div>
+
+    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
+    
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 4,
+      starterCode: "// Create function sumToN(n) that adds 1+2+...+n\n// Use a for loop\n\n",
+      solution: "function sumToN(n) {\n  let sum = 0;\n  for (let i = 1; i <= n; i++) {\n    sum += i;\n  }\n  return sum;\n}",
+      hints: [
+        "Start: function sumToN(n) { let sum = 0; }",
+        "Loop: for (let i = 1; i <= n; i++) { sum += i; }",
+        "Don't forget: return sum; after the loop ends"
+      ]
+    };
+    
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return sumToN;');
+        const sumToN = userCode();
+        if (typeof sumToN !== 'function') { pass = false; msg = 'sumToN should be a function'; }
+        else if (sumToN(5) !== 15) { pass = false; msg = 'sumToN(5) should return 15'; }
+        else if (sumToN(1) !== 1) { pass = false; msg = 'sumToN(1) should return 1'; }
+        else if (sumToN(0) !== 0) { pass = false; msg = 'sumToN(0) should return 0'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+      
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-04.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
