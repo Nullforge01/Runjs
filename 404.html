@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .error-wrap {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .error-code {
+      font-size: 120px;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+      margin: 0;
+    }
+    .error-title {
+      font-size: 32px;
+      margin: 16px 0;
+    }
+    .error-text {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      max-width: 400px;
+    }
+    .error-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .error-illustration {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 24px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body data-page="404">
+  <main class="error-wrap">
+    <div>
+      <svg class="error-illustration" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="80" stroke="var(--border)" stroke-width="2"/>
+        <path d="M70 70 L130 130 M130 70 L70 130" stroke="var(--primary)" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="90" stroke="var(--primary)" stroke-width="2" opacity="0.3"/>
+      </svg>
+      
+      <h1 class="error-code">404</h1>
+      <h2 class="error-title">Page Not Found</h2>
+      <p class="error-text">
+        The lesson, editor, or quiz you're looking for doesn't exist. 
+        It might have been moved or deleted.
+      </p>
+      
+      <div class="error-actions">
+        <a href="/index.html" class="btn btn-primary">Go Home</a>
+        <a href="/lessons.html" class="btn btn-ghost">View Lessons</a>
+        <a href="/playground.html" class="btn btn-ghost">Open Playground</a>
+      </div>
+
+      <div style="margin-top: 40px; font-size: 14px; color: var(--text-secondary);">
+        <p>Lost? <span id="suggestion"></span></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/core.js"></script>
+  <script>
+    // Smart suggestions based on user state
+    function suggest() {
+      const state = RunJS.state;
+      const el = document.getElementById('suggestion');
+      
+      if (!state.user) {
+        el.innerHTML = '<a href="/index.html">Sign in</a> to track your progress.';
+      } else if (state.completedLessons.length === 0) {
+        el.innerHTML = '<a href="/lesson-01.html">Start with Lesson 1</a>.';
+      } else if (state.completedLessons.length < 12) {
+        const next = state.completedLessons.length + 1;
+        el.innerHTML = `Continue with <a href="/lesson-${String(next).padStart(2,'0')}.html">Lesson ${next}</a>.`;
+      } else if (!state.examCompleted) {
+        el.innerHTML = 'Ready for the <a href="/final-exam.html">Final Exam</a>?';
+      } else {
+        el.innerHTML = 'View your <a href="/certificate.html">Certificate</a>.';
+      }
+    }
+    
+    // Auto redirect after 10s if user is logged in
+    let countdown = 10;
+    const timer = setInterval(() => {
+      countdown--;
+      if (countdown <= 0 && RunJS.state.user) {
+        clearInterval(timer);
+        location.href = '/lessons.html';
+      }
+    }, 1000);
+
+    suggest();
+  </script>
+</body>
+  </html>
