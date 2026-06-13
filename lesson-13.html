@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 13: You Did It — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="13">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 13: Course Complete</h1>
+      <span class="badge">complete · +25 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>You Just Learned JavaScript</h2>
+      <p>From zero to building a persistent todo app. That's real. Most tutorials stop at <code>console.log</code>. You shipped features.</p>
+
+      <h2>What You Can Build Now</h2>
+      <ul>
+        <li><strong>Interactive pages:</strong> DOM + events + state</li>
+        <li><strong>Data-driven apps:</strong> Arrays, objects, map/filter/reduce</li>
+        <li><strong>API consumers:</strong> fetch, async/await, promises</li>
+        <li><strong>Offline-first tools:</strong> localStorage persistence</li>
+      </ul>
+
+      <h2>Your Skill Tree</h2>
+      <table>
+        <tr><th>Lesson</th><th>Concept</th><th>Real Use</th></tr>
+        <tr><td>1-3</td><td>Variables, Functions, Control</td><td>Core logic</td></tr>
+        <tr><td>4-6</td><td>Loops, Arrays, Objects</td><td>Data structures</td></tr>
+        <tr><td>7-8</td><td>DOM, Events, Forms</td><td>Make pages interactive</td></tr>
+        <tr><td>9</td><td>Array Methods</td><td>Clean data transforms</td></tr>
+        <tr><td>10</td><td>Async/Promises</td><td>Talk to servers</td></tr>
+        <tr><td>11</td><td>LocalStorage</td><td>Remember user data</td></tr>
+        <tr><td>12</td><td>Final Project</td><td>Ship complete app</td></tr>
+      </table>
+
+      <h2>What's Next: 3 Paths</h2>
+      
+      <h3>1. Frontend Path: React</h3>
+      <p>You already know 80% of React. It's just components + state + props. Your todo app becomes:</p>
+      <pre><code>function TodoApp() {
+  const [todos, setTodos] = useState([]);
+  // same logic, JSX instead of DOM
+}</code></pre>
+      <p><strong>Learn:</strong> React docs, Next.js, Tailwind CSS</p>
+
+      <h3>2. Backend Path: Node.js</h3>
+      <p>Same JS, but on servers. Replace localStorage with database.</p>
+      <pre><code>app.post('/todos', (req, res) => {
+  db.todos.push(req.body);
+  res.json({ success: true });
+});</code></pre>
+      <p><strong>Learn:</strong> Node.js, Express, PostgreSQL, REST APIs</p>
+
+      <h3>3. Full-Stack Path: Build Projects</h3>
+      <p>Best way to learn is shipping. Ideas:</p>
+      <ul>
+        <li><strong>Weather app:</strong> fetch API + localStorage for last city</li>
+        <li><strong>Habit tracker:</strong> Dates, streaks, charts</li>
+        <li><strong>Markdown notes:</strong> localStorage + live preview</li>
+        <li><strong>Expense tracker:</strong> reduce for totals, filter by month</li>
+      </ul>
+
+      <h2>Key Habits of Good Devs</h2>
+      <ol>
+        <li><strong>Read error messages:</strong> They tell you exactly what's wrong</li>
+        <li><strong>Console.log everything:</strong> When confused, log the data</li>
+        <li><strong>Small steps:</strong> Make one thing work, then next thing</li>
+        <li><strong>MDN is your friend:</strong> Search "MDN array map" not "how to map"</li>
+        <li><strong>Build, don't just watch:</strong> Tutorials without coding = forgetting</li>
+      </ol>
+
+      <h2>Your Stats</h2>
+      <div id="stats" style="background:var(--bg-secondary);padding:16px;border-radius:8px;margin:16px 0;">
+        <p><strong>Lessons completed:</strong> <span id="lesson-count">0</span>/12</p>
+        <p><strong>Total XP:</strong> <span id="xp-count">0</span></p>
+        <p><strong>Time invested:</strong> ~6-8 hours of real coding</p>
+      </div>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>You Can Now:</h3>
+      <ul>
+        <li>Read and write modern JavaScript</li>
+        <li>Manipulate the DOM and handle events</li>
+        <li>Work with APIs using async/await</li>
+        <li>Persist data in the browser</li>
+        <li>Debug with console and dev tools</li>
+        <li>Build CRUD apps from scratch</li>
+      </ul>
+    </section>
+
+    <a href="/certificate.html" class="btn btn-primary">Claim Your Certificate →</a>
+  </main>
+  <script src="/js/core.js"></script>
+  <script>
+    const completed = JSON.parse(localStorage.getItem('runjs_completed') || '[]');
+    const xp = parseInt(localStorage.getItem('runjs_xp') || '0');
+    document.getElementById('lesson-count').textContent = completed.length;
+    document.getElementById('xp-count').textContent = xp;
+    
+    if (!completed.includes(13)) {
+      completed.push(13);
+      localStorage.setItem('runjs_completed', JSON.stringify(completed));
+      localStorage.setItem('runjs_xp', xp + 25);
+    }
+  </script>
+</body>
+  </html>
