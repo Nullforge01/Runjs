@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 05: Arrays — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="5">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 5: Arrays</h1>
+      <span class="badge">easy · 35 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. What Are Arrays?</h2>
+      <p>Arrays store multiple values in a single variable. Like a list. Order matters. Zero-indexed.</p>
+
+      <pre><code>const fruits = ["apple", "banana", "cherry"];
+const numbers = [1, 2, 3, 4, 5];
+const mixed = ["text", 42, true, null];</code></pre>
+
+      <h2>2. Accessing Elements</h2>
+      <p>Index starts at 0. First item = 0, second = 1, etc.</p>
+      <pre><code>const colors = ["red", "green", "blue"];
+
+console.log(colors[0]); // "red"
+console.log(colors[2]); // "blue"
+console.log(colors[3]); // undefined - doesn't exist
+
+colors[1] = "yellow"; // Change value
+console.log(colors); // ["red", "yellow", "blue"]</code></pre>
+
+      <h2>3. Array Length</h2>
+      <pre><code>const items = ["a", "b", "c"];
+console.log(items.length); // 3
+
+// Get last item
+console.log(items[items.length - 1]); // "c"</code></pre>
+
+      <h2>4. Core Array Methods</h2>
+
+      <h3>Add/Remove From End</h3>
+      <pre><code>const stack = [1, 2];
+stack.push(3); // Add to end: [1, 2, 3]
+const last = stack.pop(); // Remove from end: last = 3, stack = [1, 2]</code></pre>
+
+      <h3>Add/Remove From Start</h3>
+      <pre><code>const queue = [2, 3];
+queue.unshift(1); // Add to start: [1, 2, 3]
+const first = queue.shift(); // Remove from start: first = 1, queue = [2, 3]</code></pre>
+
+      <h3>Find Index/Check Exists</h3>
+      <pre><code>const nums = [10, 20, 30];
+nums.indexOf(20); // 1 - position
+nums.includes(40); // false - doesn't exist</code></pre>
+
+      <h3>Slice & Splice</h3>
+      <pre><code>const arr = [1, 2, 3, 4, 5];
+arr.slice(1, 3); // [2, 3] - copy portion, original unchanged
+arr.splice(2, 1); // Removes 1 item at index 2. arr = [1, 2, 4, 5]</code></pre>
+
+      <h2>5. Looping Through Arrays</h2>
+      <pre><code>const scores = [85, 90, 78];
+
+// for loop - with index
+for (let i = 0; i < scores.length; i++) {
+  console.log(`Score ${i}: ${scores[i]}`);
+}
+
+// for...of - just values
+for (const score of scores) {
+  console.log(score);
+}
+
+// forEach - functional style
+scores.forEach((score, i) => {
+  console.log(`Index ${i}: ${score}`);
+});</code></pre>
+
+      <h2>6. Common Mistakes</h2>
+      <ul>
+        <li><strong>Off-by-one:</strong> <code>arr[arr.length]</code> is undefined. Last index is <code>length - 1</code></li>
+        <li><strong>Mutating vs copy:</strong> <code>push/pop/splice</code> change original. <code>slice</code> returns copy</li>
+        <li><strong>const arrays:</strong> <code>const arr = [1]</code> lets you <code>arr.push(2)</code>. You can't reassign <code>arr = []</code></li>
+      </ul>
+
+      <h2>7. Real Examples</h2>
+      <pre><code>// Todo list
+const todos = [];
+todos.push("Learn JS"); // ["Learn JS"]
+todos.push("Build app"); // ["Learn JS", "Build app"]
+todos.shift(); // ["Build app"]
+
+// Filter numbers > 10
+const nums = [5, 12, 8, 20];
+const big = [];
+for (const n of nums) {
+  if (n > 10) big.push(n);
+}
+console.log(big); // [12, 20]</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Create arrays and access by index</li>
+        <li>Use <code>length</code> to get size</li>
+        <li>Add/remove with <code>push, pop, shift, unshift</code></li>
+        <li>Find items with <code>indexOf</code> and <code>includes</code></li>
+        <li>Loop arrays with <code>for</code> and <code>for...of</code></li>
+      </ul>
+    </section>
+
+    <a href="/editor-05.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+                                                </html>
