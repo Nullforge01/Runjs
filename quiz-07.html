@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz: DOM — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="7">
+  <main class="lesson-stage">
+    <h2>Mastery Check: DOM Manipulation</h2>
+
+    <div class="quiz-block">
+      <div class="quiz-q">1. Which method selects ONE element by CSS selector?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="0" data-correct="false">querySelectorAll</button>
+        <button class="quiz-option" data-q="0" data-correct="true">querySelector</button>
+        <button class="quiz-option" data-q="0" data-correct="false">getElementsByClass</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">2. What's safest for setting text from user input?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="1" data-correct="false">innerHTML</button>
+        <button class="quiz-option" data-q="1" data-correct="true">textContent</button>
+        <button class="quiz-option" data-q="1" data-correct="false">innerText</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">3. How do you add class "active" to element <code>el</code>?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="2" data-correct="false">el.class = "active"</button>
+        <button class="quiz-option" data-q="2" data-correct="true">el.classList.add("active")</button>
+        <button class="quiz-option" data-q="2" data-correct="false">el.addClass("active")</button>
+      </div>
+    </div>
+
+    <div id="quiz-feedback"></div>
+  </main>
+
+  <script>
+    let score = 0;
+    const totalQ = 3;
+    const answered = new Set();
+
+    document.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.onclick = () => {
+        const q = btn.dataset.q;
+        if (answered.has(q)) return;
+        answered.add(q);
+
+        const correct = btn.dataset.correct === 'true';
+        btn.style.borderColor = correct? '#22c55e' : '#ef4444';
+
+        if (correct) score++;
+
+        if (answered.size === totalQ) {
+          const feedback = document.getElementById('quiz-feedback');
+          if (score === totalQ) {
+            feedback.innerHTML = `<div class="success">Perfect! ${score}/${totalQ} · +45 XP · Lesson Mastered!</div>`;
+            const completed = JSON.parse(localStorage.getItem('runjs_completed') || '[]');
+            if (!completed.includes(7)) {
+              completed.push(7);
+              localStorage.setItem('runjs_completed', JSON.stringify(completed));
+              localStorage.setItem('runjs_xp', (parseInt(localStorage.getItem('runjs_xp') || '0') + 45));
+            }
+            setTimeout(() => location.href = '/lesson-08.html', 2000);
+          } else {
+            feedback.innerHTML = `<div class="error">You got ${score}/${totalQ}. Review notes and try again.</div>
+            <a href="/lesson-07.html" class="btn btn-primary" style="margin-top:12px">Review Notes</a>`;
+          }
+        }
+      };
+    });
+  </script>
+</body>
+</html>
