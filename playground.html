@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playground — RunJS</title>
+  <meta name="description" content="Free JavaScript playground with Monaco editor. Write, run, and share JS code instantly.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230A0A0F'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%237C3AED' font-family='Outfit' font-weight='800'>RJ</text></svg>">
+</head>
+<body>
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation" hidden></aside>
+
+    <main class="main-content">
+      <!-- Nav -->
+      <header class="nav">
+        <div class="nav-inner">
+          <div style="display:flex;align-items:center;gap:1rem">
+            <button class="btn-icon" data-sidebar-toggle aria-label="Toggle sidebar">☰</button>
+            <a href="index.html" class="nav-brand">Run<span>JS</span></a>
+          </div>
+          
+          <div class="nav-actions">
+            <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">🌙</button>
+            <a href="lessons.html" class="btn-ghost">Lessons</a>
+            <a href="playground.html" class="btn-primary">Playground</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Playground Container -->
+      <div class="playground-container">
+        
+        <!-- Header Bar -->
+        <div class="playground-header">
+          <div class="playground-title">
+            <span>JavaScript Playground</span>
+            <span style="font-size:0.75rem;color:var(--text-faint);font-weight:400;margin-left:0.5rem">Cmd+Enter to run • Cmd+S to save</span>
+          </div>
+          
+          <div class="playground-actions">
+            <button class="btn-icon" id="formatBtn" title="Format code (Cmd+K)">≡</button>
+            <button class="btn-icon" id="resetBtn" title="Reset code">↺</button>
+            <button class="btn-ghost btn-sm" id="saveBtn">Save</button>
+            <button class="btn-ghost btn-sm" id="shareBtn">Share</button>
+            <button class="btn-primary btn-sm" id="runBtn">▶ Run</button>
+          </div>
+        </div>
+
+        <!-- Editor -->
+        <div class="playground-editor" id="playgroundEditor">
+          <div class="editor-loading">Loading Monaco Editor...</div>
+        </div>
+
+        <!-- Output -->
+        <div class="playground-output">
+          <div class="playground-output-header">
+            <div class="playground-output-title">Console</div>
+            <button class="btn-icon btn-sm" id="clearBtn" title="Clear console">🗑️</button>
+          </div>
+          <div id="playgroundOutput">
+            <div class="console-empty">Click "Run" or press Cmd+Enter to execute code</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Monaco Editor CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  
+  <!-- Scripts -->
+  <script type="module" src="js/core.js"></script>
+  <script type="module" src="js/sidebar.js"></script>
+  <script type="module" src="js/playground.js"></script>
+</body>
+                                                     </html>
