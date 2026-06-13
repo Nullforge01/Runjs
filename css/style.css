@@ -260,6 +260,32 @@ a:hover{color:var(--accent-hover)}
 .btn-sm{padding:0.5rem 1rem;font-size:0.875rem}
 .skeleton-text{height:1rem;background:var(--surface);border-radius:4px;margin-bottom:var(--space-sm);animation:pulse 1.5s ease-in-out infinite}
 
+/* Playground Layout */
+.playground-container{display:grid;grid-template-rows:auto 1fr 250px;height:calc(100vh - 64px);overflow:hidden}
+.playground-header{padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:var(--space-md)}
+.playground-title{font-size:1.125rem;font-weight:700}
+.playground-actions{display:flex;align-items:center;gap:var(--space-sm)}
+.playground-editor{overflow:hidden;position:relative}
+.playground-output{display:flex;flex-direction:column;border-top:1px solid var(--border);background:var(--bg-elevated)}
+.playground-output-header{padding:var(--space-sm) var(--space-md);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.playground-output-title{font-size:0.875rem;font-weight:600;color:var(--text-muted)}
+#playgroundOutput{flex:1;overflow-y:auto;padding:var(--space-md);font-family:var(--font-code);font-size:0.875rem}
+.console-line{padding:2px 0;display:flex;gap:var(--space-sm)}
+.console-time{color:var(--text-faint);font-size:0.75rem;flex-shrink:0}
+.console-msg{color:var(--text-muted);word-break:break-word}
+.console-line.error.console-msg{color:var(--error)}
+.console-line.warn.console-msg{color:var(--warning)}
+.console-line.info.console-msg{color:var(--accent)}
+.console-line.return.console-msg{color:var(--success);font-weight:600}
+.console-line.success.console-msg{color:var(--success)}
+.console-empty{color:var(--text-faint);text-align:center;padding:var(--space-xl) 0}
+.editor-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--text-muted);background:var(--bg)}
+
+@media (max-width:768px){
+.playground-container{grid-template-rows:auto 1fr 200px}
+.playground-header{flex-wrap:wrap}
+  }
+
 @media (max-width:1024px){
 .lesson-container{grid-template-columns:1fr;grid-template-rows:auto 1fr}
 .lesson-sidebar{border-right:none;border-bottom:1px solid var(--border);max-height:40vh}
