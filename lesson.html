@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lessons — RunJS</title>
+  <meta name="description" content="25 interactive JavaScript lessons. Learn by coding with instant feedback.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230A0A0F'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%237C3AED' font-family='Outfit' font-weight='800'>RJ</text></svg>">
+</head>
+<body>
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Sidebar injected by js/sidebar.js -->
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation" hidden></aside>
+
+    <main class="main-content">
+      <!-- Nav -->
+      <header class="nav">
+        <div class="nav-inner">
+          <div style="display:flex;align-items:center;gap:1rem">
+            <button class="btn-icon" data-sidebar-toggle aria-label="Toggle sidebar">☰</button>
+            <a href="index.html" class="nav-brand">Run<span>JS</span></a>
+          </div>
+          
+          <div class="nav-actions">
+            <button class="btn-icon" id="searchBtn" aria-label="Search lessons">🔍</button>
+            <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">🌙</button>
+            <a href="playground.html" class="btn-ghost">Playground</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="container">
+          <div class="page-header-content">
+            <h1 class="page-title">JavaScript Lessons</h1>
+            <p class="page-subtitle">Master JS fundamentals through 25 hands-on coding challenges</p>
+            
+            <div class="progress-overview">
+              <div class="progress-stats">
+                <div class="progress-stat">
+                  <span class="progress-number" id="completedCount">0</span>
+                  <span class="progress-label">Completed</span>
+                </div>
+                <div class="progress-stat">
+                  <span class="progress-number">25</span>
+                  <span class="progress-label">Total</span>
+                </div>
+                <div class="progress-stat">
+                  <span class="progress-number" id="progressPercent">0%</span>
+                  <span class="progress-label">Progress</span>
+                </div>
+              </div>
+              <div class="xp-bar">
+                <div class="xp-bar-fill" id="overallProgressBar" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filters -->
+      <section class="lessons-filters">
+        <div class="container">
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="fundamentals">Fundamentals</button>
+            <button class="filter-tab" data-filter="arrays">Arrays</button>
+            <button class="filter-tab" data-filter="dom">DOM</button>
+            <button class="filter-tab" data-filter="async">Async</button>
+            <button class="filter-tab" data-filter="completed">Completed</button>
+            <button class="filter-tab" data-filter="bookmarked">Bookmarked</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lessons Grid -->
+      <section class="lessons-section">
+        <div class="container">
+          <div class="lessons-grid" id="lessonsGrid">
+            <!-- Lessons injected by js/lessons.js -->
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-bottom">
+            <p>Built with ⚡ by <a href="#" class="footer-studio">Wild Lirt Studio</a></p>
+            <p>© 2026 RunJS. 100% Free & Open Source.</p>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/core.js"></script>
+  <script type="module" src="js/sidebar.js"></script>
+  <script type="module" src="js/lessons.js"></script>
+</body>
+                    </html>
