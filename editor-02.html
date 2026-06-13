@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Functions — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="2">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Functions</h2>
+      <a href="/lesson-02.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+    
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create an arrow function called <code>double</code> that:</p>
+      <ol>
+        <li>Takes one parameter <code>num</code></li>
+        <li>Returns <code>num * 2</code></li>
+      </ol>
+      <p>Example: <code>double(4)</code> should return <code>8</code></p>
+    </div>
+
+    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
+    
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 2,
+      starterCode: "// Create an arrow function 'double' that returns num * 2\n\n",
+      solution: "const double = num => num * 2;",
+      hints: [
+        "Use const to store the function: const double = ...",
+        "Arrow syntax: (param) => returnValue",
+        "For one parameter you can skip (): num => num * 2"
+      ]
+    };
+    
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return double;');
+        const double = userCode();
+        if (typeof double !== 'function') { pass = false; msg = 'double should be a function'; }
+        else if (double(4) !== 8) { pass = false; msg = 'double(4) should return 8'; }
+        else if (double(0) !== 0) { pass = false; msg = 'double(0) should return 0'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+      
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-02.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
