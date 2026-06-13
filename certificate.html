@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .certificate {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 60px;
+      border: 8px solid var(--primary);
+      text-align: center;
+      background: var(--bg);
+    }
+    .certificate h1 { font-size: 48px; margin: 0 0 20px; }
+    .certificate h2 { font-size: 32px; margin: 20px 0; }
+    .certificate .name { 
+      font-size: 40px; 
+      border-bottom: 2px solid var(--border);
+      display: inline-block;
+      padding: 0 40px 10px;
+      margin: 20px 0;
+    }
+    .stats { display: flex; justify-content: center; gap: 40px; margin: 30px 0; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 32px; font-weight: bold; color: var(--primary); }
+    @media print {
+      .no-print { display: none; }
+      .certificate { border: 8px solid #000; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="no-print" style="text-align:center;margin:20px;">
+      <button onclick="window.print()" class="btn btn-primary">Print Certificate</button>
+      <a href="/index.html" class="btn btn-ghost">Back to Dashboard</a>
+    </div>
+    
+    <div class="certificate">
+      <h1>Certificate of Completion</h1>
+      <p>RunJS JavaScript Mastery Course</p>
+      
+      <h2>This certifies that</h2>
+      <div class="name" id="user-name">JavaScript Developer</div>
+      
+      <p>has successfully completed all 12 lessons and built a working Todo application,<br>
+      demonstrating proficiency in modern JavaScript, DOM manipulation,<br>
+      async programming, and browser storage.</p>
+      
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num" id="xp-total">0</div>
+          <div>XP Earned</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">12</div>
+          <div>Lessons</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="date"></div>
+          <div>Date</div>
+        </div>
+      </div>
+      
+      <p style="margin-top:40px;">Skills Certified: Variables, Functions, Objects, Arrays, DOM, Events,<br>
+      Array Methods, Promises, Async/Await, Fetch API, LocalStorage</p>
+    </div>
+  </main>
+  
+  <script>
+    const xp = parseInt(localStorage.getItem('runjs_xp') || '0');
+    document.getElementById('xp-total').textContent = xp;
+    
+    const today = new Date();
+    document.getElementById('date').textContent = today.toLocaleDateString();
+    
+    const name = prompt("Enter name for certificate:", "JavaScript Developer");
+    if (name) document.getElementById('user-name').textContent = name;
+  </script>
+</body>
+</html>
