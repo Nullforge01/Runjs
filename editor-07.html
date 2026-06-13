@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: DOM — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="7">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: DOM Manipulation</h2>
+      <a href="/lesson-07.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create function <code>updateTitle</code> that:</p>
+      <ol>
+        <li>Takes a string <code>newText</code></li>
+        <li>Sets <code>textContent</code> of element with id="title" to <code>newText</code></li>
+        <li>Adds class "updated" to that same element</li>
+      </ol>
+      <p>HTML already has: <code>&lt;h1 id="title"&gt;Old&lt;/h1&gt;</code></p>
+    </div>
+
+    <div style="border:1px solid var(--border);padding:12px;margin:16px 0;border-radius:8px;">
+      <h3>Live Preview:</h3>
+      <h1 id="title">Old</h1>
+    </div>
+
+    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 7,
+      starterCode: "// Create function updateTitle(newText)\n// 1. Get element by id 'title'\n// 2. Set textContent to newText\n// 3. Add class 'updated'\n\nfunction updateTitle(newText) {\n \n}",
+      solution: "function updateTitle(newText) {\n const el = document.getElementById('title');\n el.textContent = newText;\n el.classList.add('updated');\n}",
+      hints: [
+        "Get element: const el = document.getElementById('title');",
+        "Set text: el.textContent = newText;",
+        "Add class: el.classList.add('updated');"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      // Reset for test
+      document.getElementById('title').textContent = 'Old';
+      document.getElementById('title').className = '';
+      
+      try {
+        const userCode = new Function(code + '; return updateTitle;');
+        const updateTitle = userCode();
+        updateTitle('Test Title');
+        const el = document.getElementById('title');
+        
+        if (typeof updateTitle!== 'function') { pass = false; msg = 'updateTitle should be a function'; }
+        else if (el.textContent!== 'Test Title') { pass = false; msg = 'Should set textContent to newText'; }
+        else if (!el.classList.contains('updated')) { pass = false; msg = 'Should add class "updated"'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-07.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
