@@ -1,3 +1,15 @@
+if (RunJS.state.completedLessons.length === 12) {
+  const examCard = document.createElement('div');
+  examCard.className = 'lesson-card exam-card';
+  examCard.innerHTML = `
+    <h3>🎓 Final Exam</h3>
+    <p>Test your knowledge across all 12 lessons</p>
+    <p>50 questions · Certificate on completion</p>
+    <a href="/final-exam.html" class="btn btn-primary">Start Exam →</a>
+  `;
+  document.getElementById('lessonsGrid').appendChild(examCard);
+}
+
 /* ===================================
    RunJS v2.1 - Lessons System
    Grid rendering • Filters • Progress
