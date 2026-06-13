@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Events & Forms — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="8">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Events & Forms</h2>
+      <a href="/lesson-08.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Handle the form below. Create function <code>setupForm</code> that:</p>
+      <ol>
+        <li>Listens for <code>submit</code> on form id="nameForm"</li>
+        <li>Calls <code>preventDefault()</code></li>
+        <li>Reads input id="nameInput" value</li>
+        <li>If empty, set id="message" textContent to "Name required"</li>
+        <li>Else set id="message" textContent to "Hello, [name]!"</li>
+      </ol>
+    </div>
+
+    <div style="border:1px solid var(--border);padding:12px;margin:16px 0;border-radius:8px;">
+      <h3>Live Form:</h3>
+      <form id="nameForm">
+        <input id="nameInput" type="text" placeholder="Enter name">
+        <button type="submit">Submit</button>
+      </form>
+      <p id="message" style="margin-top:8px;font-weight:bold;"></p>
+    </div>
+
+    <div id="editor" style="height:400px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 8,
+      starterCode: "// Create function setupForm()\n// Add submit listener to #nameForm\n// Handle validation and update #message\n\nfunction setupForm() {\n \n}\n\nsetupForm();",
+      solution: "function setupForm() {\n const form = document.getElementById('nameForm');\n const input = document.getElementById('nameInput');\n const msg = document.getElementById('message');\n \n form.addEventListener('submit', (e) => {\n e.preventDefault();\n const name = input.value.trim();\n if (name === '') {\n msg.textContent = 'Name required';\n } else {\n msg.textContent = `Hello, ${name}!`;\n }\n });\n}",
+      hints: [
+        "Get elements: form, input, msg = document.getElementById(...)",
+        "Add: form.addEventListener('submit', (e) => { e.preventDefault();... })",
+        "Check: if (input.value.trim() === '') { msg.textContent = 'Name required'; }"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      // Reset
+      document.getElementById('nameInput').value = '';
+      document.getElementById('message').textContent = '';
+      const oldForm = document.getElementById('nameForm');
+      const newForm = oldForm.cloneNode(true);
+      oldForm.parentNode.replaceChild(newForm, oldForm);
+
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return setupForm;');
+        const setupForm = userCode();
+        if (typeof setupForm!== 'function') throw new Error('setupForm should be a function');
+        setupForm();
+
+        // Test 1: Empty submit
+        document.getElementById('nameInput').value = '';
+        document.getElementById('nameForm').dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}));
+        if (document.getElementById('message').textContent!== 'Name required') {
+          pass = false; msg = 'Empty input should show "Name required"';
+        }
+
+        // Test 2: Valid submit
+        document.getElementById('nameInput').value = 'Alex';
+        document.getElementById('nameForm').dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}));
+        if (document.getElementById('message').textContent!== 'Hello, Alex!') {
+          pass = false; msg = 'Valid input should show "Hello, Alex!"';
+        }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-08.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
