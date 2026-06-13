@@ -1,3 +1,42 @@
+/* Monaco Editor Container Fix */
+#editor {
+  height: 500px;
+  min-height: 500px;
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #1e1e1e;
+  flex-shrink: 0; /* Critical: stops flex parents from collapsing it */
+  position: relative;
+}
+
+/* Parent containers must not collapse */
+.lesson-stage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-actions {
+  flex-shrink: 0; /* Keep buttons visible */
+}
+
+/* Mobile specific fixes */
+@media (max-width: 768px) {
+  #editor {
+    height: 400px; /* Shorter on mobile */
+    min-height: 400px;
+  }
+}
+
+/* Make sure Monaco's internal containers fill the space */
+#editor .monaco-editor {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 /* RunJS v2.1 — Midnight Glow Core */
 :root {
   --bg: #0A0A0F;
