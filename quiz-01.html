@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz: Variables — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="1">
+  <main class="lesson-stage">
+    <h2>Mastery Check: Variables</h2>
+    
+    <div class="quiz-block">
+      <div class="quiz-q">1. Which keyword should you use for a value that never changes?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="0" data-correct="false">let</button>
+        <button class="quiz-option" data-q="0" data-correct="true">const</button>
+        <button class="quiz-option" data-q="0" data-correct="false">var</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">2. What is the data type of <code>false</code>?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="1" data-correct="false">String</button>
+        <button class="quiz-option" data-q="1" data-correct="false">Number</button>
+        <button class="quiz-option" data-q="1" data-correct="true">Boolean</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">3. What happens if you run: <code>const x = 5; x = 10;</code>?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="2" data-correct="false">x becomes 10</button>
+        <button class="quiz-option" data-q="2" data-correct="true">Error - can't reassign const</button>
+        <button class="quiz-option" data-q="2" data-correct="false">x becomes undefined</button>
+      </div>
+    </div>
+
+    <div id="quiz-feedback"></div>
+  </main>
+
+  <script>
+    let score = 0;
+    const totalQ = 3;
+    const answered = new Set();
+
+    document.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.onclick = () => {
+        const q = btn.dataset.q;
+        if (answered.has(q)) return;
+        answered.add(q);
+        
+        const correct = btn.dataset.correct === 'true';
+        btn.style.borderColor = correct ? '#22c55e' : '#ef4444';
+        
+        if (correct) score++;
+        
+        if (answered.size === totalQ) {
+          const feedback = document.getElementById('quiz-feedback');
+          if (score === totalQ) {
+            feedback.innerHTML = `<div class="success">Perfect! ${score}/${totalQ} · +25 XP · Lesson Mastered!</div>`;
+            const completed = JSON.parse(localStorage.getItem('runjs_completed') || '[]');
+            if (!completed.includes(1)) {
+              completed.push(1);
+              localStorage.setItem('runjs_completed', JSON.stringify(completed));
+              localStorage.setItem('runjs_xp', (parseInt(localStorage.getItem('runjs_xp') || '0') + 25));
+            }
+            setTimeout(() => location.href = '/lesson-02.html', 2000);
+          } else {
+            feedback.innerHTML = `<div class="error">You got ${score}/${totalQ}. Review notes and try again.</div>
+            <a href="/lesson-01.html" class="btn btn-primary" style="margin-top:12px">Review Notes</a>`;
+          }
+        }
+      };
+    });
+  </script>
+</body>
+</html>
