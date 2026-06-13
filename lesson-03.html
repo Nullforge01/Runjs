@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 03: Conditionals — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="3">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 3: Conditionals</h1>
+      <span class="badge">easy · 30 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. Making Decisions with Code</h2>
+      <p>Conditionals let your code choose different paths based on true/false checks. Like "if it's raining, take umbrella".</p>
+      
+      <pre><code>const isRaining = true;
+
+if (isRaining) {
+  console.log("Take umbrella");
+} else {
+  console.log("Wear sunglasses");
+}</code></pre>
+
+      <h2>2. if, else if, else</h2>
+      <pre><code>const score = 85;
+
+if (score >= 90) {
+  console.log("A grade");
+} else if (score >= 80) {
+  console.log("B grade"); // This runs
+} else if (score >= 70) {
+  console.log("C grade");
+} else {
+  console.log("F grade");
+}</code></pre>
+      <p><strong>Rule:</strong> JS checks top to bottom. Stops at first true condition.</p>
+
+      <h2>3. Comparison Operators</h2>
+      <table>
+        <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td><code>===</code></td><td>Equal value + type</td><td><code>5 === 5</code> → true</td></tr>
+        <tr><td><code>!==</code></td><td>Not equal</td><td><code>5 !== 3</code> → true</td></tr>
+        <tr><td><code>></code></td><td>Greater than</td><td><code>10 > 5</code> → true</td></tr>
+        <tr><td><code><</code></td><td>Less than</td><td><code>3 < 7</code> → true</td></tr>
+        <tr><td><code>>=</code></td><td>Greater or equal</td><td><code>5 >= 5</code> → true</td></tr>
+        <tr><td><code><=</code></td><td>Less or equal</td><td><code>4 <= 5</code> → true</td></tr>
+      </table>
+      <p><strong>Avoid <code>==</code></strong> — it does type coercion. <code>5 == "5"</code> is true but dangerous. Always use <code>===</code>.</p>
+
+      <h2>4. Logical Operators</h2>
+      
+      <h3>AND <code>&&</code> — Both must be true</h3>
+      <pre><code>const age = 20;
+const hasID = true;
+
+if (age >= 18 && hasID) {
+  console.log("Can enter club"); // Runs
+}</code></pre>
+
+      <h3>OR <code>||</code> — At least one true</h3>
+      <pre><code>const isWeekend = false;
+const isHoliday = true;
+
+if (isWeekend || isHoliday) {
+  console.log("No work today"); // Runs
+}</code></pre>
+
+      <h3>NOT <code>!</code> — Flip boolean</h3>
+      <pre><code>const isBanned = false;
+
+if (!isBanned) {
+  console.log("User allowed"); // Runs
+}</code></pre>
+
+      <h2>5. Ternary Operator — Short if/else</h2>
+      <pre><code>const age = 20;
+const status = age >= 18 ? "Adult" : "Minor";
+// condition ? valueIfTrue : valueIfFalse
+
+console.log(status); // "Adult"</code></pre>
+
+      <h2>6. switch — Multiple exact matches</h2>
+      <pre><code>const day = "Monday";
+
+switch (day) {
+  case "Monday":
+    console.log("Start of week");
+    break;
+  case "Friday":
+    console.log("Weekend soon");
+    break;
+  default:
+    console.log("Regular day");
+}</code></pre>
+      <p><strong>Don’t forget <code>break</code></strong> or it falls through to next case.</p>
+
+      <h2>7. Truthy & Falsy</h2>
+      <p>JS treats these as false: <code>false, 0, "", null, undefined, NaN</code>. Everything else is truthy.</p>
+      <pre><code>const username = "";
+
+if (username) {
+  console.log("Has name");
+} else {
+  console.log("Empty"); // This runs
+}</code></pre>
+
+      <h2>8. Real Examples</h2>
+      <pre><code>// Login check
+function checkLogin(user, pass) {
+  if (!user || !pass) {
+    return "Missing fields";
+  } else if (user === "admin" && pass === "1234") {
+    return "Welcome admin";
+  } else {
+    return "Invalid credentials";
+  }
+}
+
+// Discount logic
+const total = 150;
+const discount = total > 100 ? 0.1 : 0;
+const finalPrice = total * (1 - discount);</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Write <code>if / else if / else</code> chains</li>
+        <li>Use comparison <code>===, !==, >, <</code> correctly</li>
+        <li>Combine conditions with <code>&&</code> and <code>||</code></li>
+        <li>Use ternary for simple cases</li>
+        <li>Know when to use <code>switch</code> vs <code>if</code></li>
+      </ul>
+    </section>
+
+    <a href="/editor-03.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+                  </html>
