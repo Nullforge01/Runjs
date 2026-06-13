@@ -6,79 +6,101 @@
   <title>Certificate — RunJS</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
-    .certificate {
-      max-width: 800px;
+   .cert-wrap {
+      max-width: 900px;
       margin: 40px auto;
       padding: 60px;
-      border: 8px solid var(--primary);
-      text-align: center;
+      border: 12px solid;
       background: var(--bg);
+      text-align: center;
+      position: relative;
     }
-    .certificate h1 { font-size: 48px; margin: 0 0 20px; }
-    .certificate h2 { font-size: 32px; margin: 20px 0; }
-    .certificate .name { 
-      font-size: 40px; 
-      border-bottom: 2px solid var(--border);
-      display: inline-block;
-      padding: 0 40px 10px;
-      margin: 20px 0;
-    }
-    .stats { display: flex; justify-content: center; gap: 40px; margin: 30px 0; }
-    .stat { text-align: center; }
-    .stat-num { font-size: 32px; font-weight: bold; color: var(--primary); }
+   .cert-wrap.grade-A { border-color: #10b981; }
+   .cert-wrap.grade-B { border-color: #3b82f6; }
+   .cert-wrap.grade-C { border-color: #f59e0b; }
+   .cert-wrap.grade-D { border-color: #ef4444; }
+   .cert-wrap.grade-F { border-color: #dc2626; }
+   .cert-title { font-size: 52px; margin: 0; font-weight: 800; }
+   .cert-name { font-size: 40px; margin: 24px 0; font-weight: 700; }
+   .cert-text { font-size: 18px; margin: 12px 0; }
+   .cert-grade { font-size: 72px; font-weight: 900; margin: 20px 0; }
+   .cert-meta { margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px; }
+   .cert-badge { width: 140px; height: 140px; margin: 20px auto; }
     @media print {
-      .no-print { display: none; }
-      .certificate { border: 8px solid #000; }
+     .no-print { display: none; }
+      body { background: white; }
     }
   </style>
 </head>
-<body>
-  <main>
-    <div class="no-print" style="text-align:center;margin:20px;">
-      <button onclick="window.print()" class="btn btn-primary">Print Certificate</button>
-      <a href="/index.html" class="btn btn-ghost">Back to Dashboard</a>
-    </div>
-    
-    <div class="certificate">
-      <h1>Certificate of Completion</h1>
-      <p>RunJS JavaScript Mastery Course</p>
-      
-      <h2>This certifies that</h2>
-      <div class="name" id="user-name">JavaScript Developer</div>
-      
-      <p>has successfully completed all 12 lessons and built a working Todo application,<br>
-      demonstrating proficiency in modern JavaScript, DOM manipulation,<br>
-      async programming, and browser storage.</p>
-      
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-num" id="xp-total">0</div>
-          <div>XP Earned</div>
+<body data-page="certificate">
+  <div class="no-print lesson-header" style="padding: 20px;">
+    <a href="/lessons.html" class="btn btn-ghost">← Dashboard</a>
+    <button onclick="window.print()" class="btn btn-primary">Print / Save PDF</button>
+    <a href="/final-exam.html" class="btn btn-ghost">Retake Exam</a>
+  </div>
+
+  <div id="cert-gate" class="lesson-stage">
+    <p>You must complete the final exam to earn your certificate.</p>
+    <a href="/final-exam.html" class="btn btn-primary">Take Exam</a>
+  </div>
+
+  <div id="certificate" style="display:none">
+    <div class="cert-wrap" id="cert-container">
+      <svg class="cert-badge" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="4"/>
+        <path d="M30 50 L45 65 L70 35" stroke="currentColor" stroke-width="6" fill="none"/>
+      </svg>
+      <h1 class="cert-title">Certificate of Completion</h1>
+      <p class="cert-text">This certifies that</p>
+      <h2 class="cert-name" id="cert-user">Student</h2>
+      <p class="cert-text">has successfully completed</p>
+      <h3>RunJS JavaScript Fundamentals</h3>
+      <p class="cert-text">12 Lessons · Final Project · 50 Question Exam</p>
+
+      <div class="cert-grade" id="cert-grade-letter">A</div>
+      <p class="cert-text">Final Score: <span id="cert-score">100</span>% — <span id="cert-grade-text">Excellent</span></p>
+
+      <div class="cert-meta">
+        <div>
+          <div style="border-top: 1px solid var(--border); padding-top: 8px;">Date Issued</div>
+          <div id="cert-date">2026-01-01</div>
         </div>
-        <div class="stat">
-          <div class="stat-num">12</div>
-          <div>Lessons</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num" id="date"></div>
-          <div>Date</div>
+        <div>
+          <div style="border-top: 1px solid var(--border); padding-top: 8px;">RunJS Academy</div>
+          <div>ID: <span id="cert-id"></span></div>
         </div>
       </div>
-      
-      <p style="margin-top:40px;">Skills Certified: Variables, Functions, Objects, Arrays, DOM, Events,<br>
-      Array Methods, Promises, Async/Await, Fetch API, LocalStorage</p>
     </div>
-  </main>
-  
+  </div>
+
+  <script src="/js/core.js"></script>
   <script>
-    const xp = parseInt(localStorage.getItem('runjs_xp') || '0');
-    document.getElementById('xp-total').textContent = xp;
-    
-    const today = new Date();
-    document.getElementById('date').textContent = today.toLocaleDateString();
-    
-    const name = prompt("Enter name for certificate:", "JavaScript Developer");
-    if (name) document.getElementById('user-name').textContent = name;
+    function init() {
+      if (!RunJS.state.examCompleted) return;
+
+      document.getElementById('cert-gate').style.display = 'none';
+      document.getElementById('certificate').style.display = 'block';
+
+      const user = RunJS.state.user?.name || 'Guest Student';
+      const score = RunJS.state.examScore || 0;
+      const grade = RunJS.state.examGrade || 'F - Retry Required';
+      const date = new Date(RunJS.state.examDate).toLocaleDateString();
+      const gradeLetter = grade.charAt(0);
+      const gradeText = grade.split(' - ')[1] || 'Pass';
+      const id = 'RJ-' + btoa(user + date).slice(0, 10).toUpperCase();
+
+      document.getElementById('cert-user').textContent = user;
+      document.getElementById('cert-score').textContent = score;
+      document.getElementById('cert-grade-letter').textContent = gradeLetter;
+      document.getElementById('cert-grade-text').textContent = gradeText;
+      document.getElementById('cert-date').textContent = date;
+      document.getElementById('cert-id').textContent = id;
+
+      const container = document.getElementById('cert-container');
+      container.className = 'cert-wrap grade-' + gradeLetter;
+      container.style.color = getComputedStyle(container).borderColor;
+    }
+    init();
   </script>
 </body>
-</html>
+  </html>
