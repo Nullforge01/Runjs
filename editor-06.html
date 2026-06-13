@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Objects — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="6">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Objects</h2>
+      <a href="/lesson-06.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create an object <code>book</code> with:</p>
+      <ol>
+        <li>Property <code>title</code> set to "JavaScript Guide"</li>
+        <li>Property <code>pages</code> set to 250</li>
+        <li>Method <code>info</code> that returns <code>"JavaScript Guide - 250 pages"</code> using <code>this</code></li>
+      </ol>
+    </div>
+
+    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 6,
+      starterCode: "// Create object 'book' with title, pages, and info() method\n\nconst book = {\n \n};",
+      solution: "const book = {\n title: 'JavaScript Guide',\n pages: 250,\n info() {\n return `${this.title} - ${this.pages} pages`;\n }\n};",
+      hints: [
+        "Start: const book = { title: 'JavaScript Guide', pages: 250 };",
+        "Add method: info() { return `${this.title} - ${this.pages} pages`; }",
+        "Use 'this' inside method to access title and pages"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      try {
+        const userCode = new Function(code + '; return book;');
+        const book = userCode();
+        if (typeof book!== 'object') { pass = false; msg = 'book should be an object'; }
+        else if (book.title!== 'JavaScript Guide') { pass = false; msg = 'title should be "JavaScript Guide"'; }
+        else if (book.pages!== 250) { pass = false; msg = 'pages should be 250'; }
+        else if (typeof book.info!== 'function') { pass = false; msg = 'info should be a method'; }
+        else if (book.info()!== 'JavaScript Guide - 250 pages') { pass = false; msg = 'info() should return "JavaScript Guide - 250 pages"'; }
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-06.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
