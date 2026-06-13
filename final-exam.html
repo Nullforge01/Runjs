@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Exam — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+   .exam-progress { position: sticky; top: 0; background: var(--bg); padding: 12px 0; border-bottom: 1px solid var(--border); z-index: 10; }
+   .progress-bar { height: 8px; background: var(--bg-alt); border-radius: 4px; overflow: hidden; }
+   .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+   .quiz-question { margin-bottom: 24px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; }
+   .quiz-question label { display: block; padding: 8px; margin: 4px 0; cursor: pointer; border-radius: 4px; }
+   .quiz-question label:hover { background: var(--bg-alt); }
+   .quiz-question input { margin-right: 8px; }
+  </style>
+</head>
+<body data-page="exam">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Final Exam: JavaScript Fundamentals</h1>
+      <span class="badge">50 questions · All topics covered · Certificate on completion</span>
+    </div>
+
+    <div id="exam-gate" class="challenge-desc">
+      <p>Complete all 12 lessons to unlock the final exam.</p>
+      <p>Progress: <span id="completed-count">0</span>/12 lessons</p>
+      <a href="/lessons.html" class="btn btn-primary">Back to Lessons</a>
+    </div>
+
+    <form id="exam-form" style="display:none">
+      <div class="exam-progress">
+        <div>Question <span id="current-q">1</span> of 50</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+      </div>
+      <div id="questions"></div>
+      <button type="submit" class="btn btn-primary">Submit Exam</button>
+    </form>
+
+    <div id="exam-result"></div>
+  </main>
+
+  <script src="/js/core.js"></script>
+  <script>
+    const EXAM_QUESTIONS = [
+      // Variables & Types 1-5
+      {q: "Which keyword declares a block-scoped variable?", options: ["var", "let", "function", "const var"], answer: 1},
+      {q: "typeof null returns:", options: ["'null'", "'undefined'", "'object'", "'number'"], answer: 2},
+      {q: "const x = 5; x = 6; What happens?", options: ["x becomes 6", "TypeError", "x becomes '6'", "Nothing"], answer: 1},
+      {q: "Template literals use which characters?", options: ["''", '""', "``", "[]"], answer: 2},
+      {q: "Which is NOT a primitive type?", options: ["string", "number", "array", "boolean"], answer: 2},
+
+      // Functions 6-10
+      {q: "Arrow functions cannot be used as:", options: ["Callbacks", "Constructors", "Event handlers", "Array methods"], answer: 1},
+      {q: "function fn(a, b=5) {} What is b if only fn(1) is called?", options: ["undefined", "null", "5", "Error"], answer: 2},
+      {q: "What does 'return' do?", options: ["Stops function and outputs value", "Prints to console", "Loops code", "Declares variable"], answer: 0},
+      {q: "Function expressions are:", options: ["Hoisted", "Not hoisted", "Always arrow", "Global only"], answer: 1},
+      {q: "IIFE stands for:", options: ["Internal Inline Function", "Immediately Invoked Function Expression", "Instance of Function", "Indexed Function"], answer: 1},
+
+      // Arrays 11-15
+      {q: "Which adds item to end of array?", options: ["push()", "pop()", "shift()", "unshift()"], answer: 0},
+      {q: "arr.map() returns:", options: ["Nothing", "Original array", "New array", "Boolean"], answer: 2},
+      {q: "filter() keeps items where callback returns:", options: ["false", "true", "null", "undefined"], answer: 1},
+      {q: "reduce() is used to:", options: ["Remove items", "Transform array to single value", "Sort array", "Clone array"], answer: 1},
+      {q: "Array index starts at:", options: ["1", "0", "-1", "Depends"], answer: 1},
+
+      // Objects 16-20
+      {q: "Access object property 'name':", options: ["obj[name]", "obj.'name'", "obj.name", "obj->name"], answer: 2},
+      {q: "Object.keys(obj) returns:", options: ["Values array", "Keys array", "Object", "String"], answer: 1},
+      {q: "Spread syntax for objects:", options: ["...obj", "obj...", "**obj", "obj***"], answer: 0},
+      {q: "Destructuring: const {x} = obj; gets:", options: ["obj.x value", "Key 'x'", "Error", "undefined"], answer: 0},
+      {q: "this in a method refers to:", options: ["Global", "The object", "undefined", "Function"], answer: 1},
+
+      // DOM 21-25
+      {q: "Select element by ID:", options: ["querySelector('#id')", "getElement('id')", "select('#id')", "$('#id')"], answer: 0},
+      {q: "textContent vs innerHTML:", options: ["Same", "textContent is safe from XSS", "innerHTML is faster", "No difference"], answer: 1},
+      {q: "Add class to element:", options: ["el.class = 'x'", "el.addClass('x')", "el.classList.add('x')", "el.setClass('x')"], answer: 2},
+      {q: "Create new element:", options: ["new Element()", "document.createElement()", "create('div')", "<div>"], answer: 1},
+      {q: "Event delegation uses:", options: ["Multiple listeners", "One listener on parent", "No listeners", "Inline onclick"], answer: 1},
+
+      // Events 26-30
+      {q: "e.preventDefault() does what?", options: ["Stops bubbling", "Stops default browser action", "Removes element", "Throws error"], answer: 1},
+      {q: "e.stopPropagation() does what?", options: ["Stops default", "Stops event bubbling up", "Deletes event", "Pauses code"], answer: 1},
+      {q: "Which event fires on input change?", options: ["click", "change", "submit", "load"], answer: 1},
+      {q: "addEventListener third param 'true' means:", options: ["Once", "Capture phase", "Passive", "Async"], answer: 1},
+      {q: "Event.target is:", options: ["Where listener attached", "Element that triggered event", "Parent element", "Document"], answer: 1},
+
+      // Async 31-35
+      {q: "Promise state 'pending' means:", options: ["Resolved", "Rejected", "Not yet settled", "Error"], answer: 2},
+      {q: "async function always returns:", options: ["Value", "Promise", "undefined", "Error"], answer: 1},
+      {q: "await can only be used in:", options: ["Global", "async functions", "Loops", "Callbacks"], answer: 1},
+      {q: "fetch() returns:", options: ["JSON", "Promise", "String", "Object"], answer: 1},
+      {q: ".then() handles:", options: ["Errors only", "Success only", "Both", "Nothing"], answer: 1},
+
+      // LocalStorage 36-40
+      {q: "localStorage stores:", options: ["Objects", "Strings only", "Numbers", "Functions"], answer: 1},
+      {q: "Convert object to string for storage:", options: ["toString()", "JSON.stringify()", "String()", "parse()"], answer: 1},
+      {q: "localStorage persists:", options: ["Session only", "Until cleared", "1 day", "Page reload only"], answer: 1},
+      {q: "Remove item:", options: ["localStorage.delete()", "localStorage.removeItem()", "localStorage.clear()", "localStorage.pop()"], answer: 1},
+      {q: "localStorage size limit approx:", options: ["5KB", "5MB", "50MB", "Unlimited"], answer: 1},
+
+      // Scope/Closures 41-45
+      {q: "let is block scoped. var is:", options: ["Block scoped", "Function scoped", "Global only", "Module scoped"], answer: 1},
+      {q: "Closure gives access to:", options: ["Global only", "Outer function scope", "Sibling scope", "Nothing"], answer: 1},
+      {q: "Hoisting moves:", options: ["Code to bottom", "Declarations to top", "Functions to bottom", "Nothing"], answer: 1},
+      {q: "TDZ means:", options: ["Temporal Dead Zone", "Type Data Zone", "Test Debug Zone", "Time Delay Zone"], answer: 0},
+      {q: "IIFE pattern:", options: ["(function(){})()", "function(){}", "() => {}", "function*(){}"], answer: 0},
+
+      // Mixed Advanced 46-50
+      {q: "=== checks:", options: ["Value only", "Type only", "Value and type", "Reference only"], answer: 2},
+      {q: "NaN === NaN returns:", options: ["true", "false", "undefined", "Error"], answer: 1},
+      {q: "'5' + 3 equals:", options: ["8", "'53'", "53", "Error"], answer: 1},
+      {q: "Array.isArray([]) returns:", options: ["false", "true", "'array'", "undefined"], answer: 1},
+      {q: "try/catch handles:", options: ["Syntax errors", "Runtime errors", "Logic errors", "All errors"], answer: 1}
+    ];
+
+    function init() {
+      const completed = RunJS.state.completedLessons || [];
+      document.getElementById('completed-count').textContent = completed.length;
+
+      if (completed.length < 12) return;
+
+      document.getElementById('exam-gate').style.display = 'none';
+      document.getElementById('exam-form').style.display = 'block';
+      renderQuestions();
+      updateProgress();
+    }
+
+    function renderQuestions() {
+      const container = document.getElementById('questions');
+      container.innerHTML = EXAM_QUESTIONS.map((item, i) => `
+        <div class="quiz-question" id="q${i}">
+          <p><strong>${i+1}.</strong> ${item.q}</p>
+          ${item.options.map((opt, j) => `
+            <label>
+              <input type="radio" name="q${i}" value="${j}" onchange="updateProgress()">
+              ${opt}
+            </label>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    function updateProgress() {
+      const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+      document.getElementById('current-q').textContent = Math.min(answered + 1, 50);
+      document.getElementById('progress').style.width = (answered / 50 * 100) + '%';
+    }
+
+    document.getElementById('exam-form').onsubmit = (e) => {
+      e.preventDefault();
+      let score = 0;
+
+      EXAM_QUESTIONS.forEach((item, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && Number(selected.value) === item.answer) score++;
+      });
+
+      const percent = Math.round(score / 50 * 100);
+
+      // Determine grade
+      let grade, gradeColor;
+      if (percent >= 90) { grade = 'A - Excellent'; gradeColor = '#10b981'; }
+      else if (percent >= 80) { grade = 'B - Good'; gradeColor = '#3b82f6'; }
+      else if (percent >= 70) { grade = 'C - Pass'; gradeColor = '#f59e0b'; }
+      else if (percent >= 60) { grade = 'D - Needs Work'; gradeColor = '#ef4444'; }
+      else { grade = 'F - Retry Required'; gradeColor = '#dc2626'; }
+
+      RunJS.updateState('examScore', percent);
+      RunJS.updateState('examGrade', grade);
+      RunJS.updateState('examDate', new Date().toISOString());
+      RunJS.updateState('examCompleted', true);
+      RunJS.addXP(percent * 2); // 0-100 XP based on score
+
+      document.getElementById('exam-form').style.display = 'none';
+      document.getElementById('exam-result').innerHTML = `
+        <div class="success" style="border-left: 4px solid ${gradeColor}">
+          <h3>Exam Complete: ${percent}%</h3>
+          <p style="font-size: 24px; color: ${gradeColor}"><strong>${grade}</strong></p>
+          <p>You scored ${score}/50 correct. +${percent * 2} XP</p>
+          <a href="/certificate.html" class="btn btn-primary">View Certificate →</a>
+        </div>
+      `;
+    };
+
+    init();
+  </script>
+</body>
+</html>
