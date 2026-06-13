@@ -1,22 +1,48 @@
-// js/auth.js - mobile guest auth
+// js/auth.js - mobile guest auth, integrated with RunJS core
 document.addEventListener('DOMContentLoaded', () => {
-  const loginBtn = document.querySelector('button:contains("Log In")');
-  const signupBtn = document.querySelector('button:contains("Sign Up")'); 
-  const guestBtn = document.querySelector('button:contains("Continue as Guest")');
-  const startBtn = document.querySelector('button:contains("Start Learning")');
+  // Wait for RunJS to init first
+  if (!window.RunJS) {
+    setTimeout(arguments.callee, 50);
+    return;
+  }
+
+  const loginBtn = document.getElementById('loginBtn');
+  const signupBtn = document.querySelector('a[href="signup.html"]');
+  const guestBtn = document.getElementById('guestBtn');
+  const startBtn = document.getElementById('startLearningBtn');
 
   const goToLessons = () => {
-    localStorage.setItem('runjs_user', JSON.stringify({id:'guest', name:'Guest'}));
-    location.href = '/lessons.html';
+    // Use RunJS state system, not raw localStorage
+    RunJS.state.user = {
+      id: 'guest',
+      name: 'Guest',
+      email: null,
+      isGuest: true
+    };
+    RunJS.saveState();
+    RunJS.updateUserUI();
+    RunJS.toast('Welcome! Progress will be saved locally.', 'success');
+    setTimeout(() => location.href = 'lessons.html', 500);
+  };
+
+  const handleAuthClick = (e) => {
+    e.preventDefault();
+    const btn = e.currentTarget;
+    
+    if (btn === loginBtn || btn === signupBtn) {
+      RunJS.toast('Accounts coming soon. Using Guest mode for now.', 'warning');
+    }
+    goToLessons();
   };
 
   [loginBtn, signupBtn, guestBtn, startBtn].forEach(btn => {
-    if(btn) btn.onclick = (e) => {
-      e.preventDefault();
-      if(btn === loginBtn || btn === signupBtn) {
-        alert('Accounts coming soon. Using Guest mode for now.');
-      }
-      goToLessons();
-    };
+    if (btn) btn.addEventListener('click', handleAuthClick);
   });
+
+  // Auto-redirect if already logged in as guest
+  if (RunJS.state.user && location.pathname.endsWith('index.html')) {
+    const skipBtn = document.createElement('div');
+    skipBtn.innerHTML = `<div style="text-align:center;margin-top:16px;"><a href="lessons.html" class="btn-ghost">Continue to Dashboard →</a></div>`;
+    document.querySelector('.hero-cta')?.appendChild(skipBtn);
+  }
 });
