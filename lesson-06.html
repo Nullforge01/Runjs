@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 06: Objects — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="6">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 6: Objects</h1>
+      <span class="badge">easy · 40 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. What Are Objects?</h2>
+      <p>Objects group related data into key-value pairs. Arrays use numbered indexes. Objects use named keys.</p>
+
+      <pre><code>// Object literal
+const user = {
+  name: "Alex",
+  age: 25,
+  isAdmin: true
+};</code></pre>
+
+      <h2>2. Accessing Properties</h2>
+      <h3>Dot Notation — Use when you know the key</h3>
+      <pre><code>console.log(user.name); // "Alex"
+user.age = 26; // Update</code></pre>
+
+      <h3>Bracket Notation — Use for dynamic keys</h3>
+      <pre><code>const key = "name";
+console.log(user[key]); // "Alex"
+user["isAdmin"] = false;</code></pre>
+
+      <h2>3. Adding & Deleting Properties</h2>
+      <pre><code>const car = { brand: "Tesla" };
+car.model = "Model 3"; // Add new key
+car.year = 2024;
+
+delete car.year; // Remove key
+console.log(car); // { brand: "Tesla", model: "Model 3" }</code></pre>
+
+      <h2>4. Methods — Functions Inside Objects</h2>
+      <p>When a function is a property, it’s called a method. Use <code>this</code> to access other properties.</p>
+      <pre><code>const person = {
+  name: "Sarah",
+  greet: function() {
+    return `Hi, I'm ${this.name}`;
+  },
+  // Shorthand method syntax
+  sayAge() {
+    return `I'm 30`;
+  }
+};
+
+console.log(person.greet()); // "Hi, I'm Sarah"</code></pre>
+
+      <h2>5. Nested Objects & Arrays</h2>
+      <pre><code>const profile = {
+  username: "dev_pro",
+  stats: {
+    posts: 42,
+    followers: 1200
+  },
+  skills: ["JS", "React", "Node"]
+};
+
+console.log(profile.stats.posts); // 42
+console.log(profile.skills[1]); // "React"</code></pre>
+
+      <h2>6. Looping Through Objects</h2>
+      <pre><code>const scores = { math: 90, english: 85, science: 95 };
+
+// for...in — loop keys
+for (const subject in scores) {
+  console.log(`${subject}: ${scores[subject]}`);
+}
+
+// Object.keys — get array of keys
+const keys = Object.keys(scores); // ["math", "english", "science"]
+// Object.values — get array of values
+const values = Object.values(scores); // [90, 85, 95]</code></pre>
+
+      <h2>7. Common Mistakes</h2>
+      <ul>
+        <li><strong>Undefined property:</strong> <code>user.email</code> returns <code>undefined</code> if key doesn’t exist</li>
+        <li><strong>Mutating const objects:</strong> <code>const obj = {}</code> lets you change <code>obj.x = 1</code>. You just can’t reassign <code>obj = {}</code></li>
+        <li><strong>Dot vs bracket:</strong> <code>obj.123</code> fails. Use <code>obj["123"]</code> for invalid identifier keys</li>
+      </ul>
+
+      <h2>8. Real Examples</h2>
+      <pre><code>// Product object
+const product = {
+  id: 101,
+  name: "Laptop",
+  price: 999,
+  inStock: true,
+  tags: ["tech", "work"],
+  getDiscount: function(percent) {
+    return this.price * (1 - percent / 100);
+  }
+};
+
+console.log(product.getDiscount(10)); // 899.1
+
+// Config object
+const settings = {
+  theme: "dark",
+  notifications: true,
+  language: "en"
+};
+settings.theme = "light"; // Update setting</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Create objects with key-value pairs</li>
+        <li>Access/update with dot and bracket notation</li>
+        <li>Add and delete properties</li>
+        <li>Write methods using <code>this</code></li>
+        <li>Loop objects with <code>for...in</code> and <code>Object.keys</code></li>
+      </ul>
+    </section>
+
+    <a href="/editor-06.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+    </html>
