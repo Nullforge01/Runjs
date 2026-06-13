@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 09: Array Methods — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="9">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 9: Array Methods</h1>
+      <span class="badge">medium · 50 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. Why Array Methods?</h2>
+      <p>For loops work, but array methods are shorter, clearer, and less error-prone. They express intent: map = transform, filter = pick, reduce = combine.</p>
+
+      <pre><code>// For loop way
+const nums = [1, 2, 3];
+const doubled = [];
+for (let i = 0; i < nums.length; i++) {
+  doubled.push(nums[i] * 2);
+}
+
+// Array method way
+const doubled = nums.map(n => n * 2); // [2, 4, 6]</code></pre>
+
+      <h2>2. map — Transform Every Item</h2>
+      <p>Returns a new array. Same length. Changes each item.</p>
+      <pre><code>const prices = [10, 20, 30];
+const withTax = prices.map(p => p * 1.1);
+// [11, 22, 33]
+
+const users = [{name: "Alex"}, {name: "Sam"}];
+const names = users.map(u => u.name);
+// ["Alex", "Sam"]</code></pre>
+
+      <h2>3. filter — Keep Some Items</h2>
+      <p>Returns new array. Can be shorter. Keeps items where callback returns true.</p>
+      <pre><code>const scores = [55, 90, 60, 85];
+const passed = scores.filter(s => s >= 70);
+// [90, 85]
+
+const todos = [
+  {text: "Code", done: true},
+  {text: "Sleep", done: false}
+];
+const done = todos.filter(t => t.done);
+// [{text: "Code", done: true}]</code></pre>
+
+      <h2>4. reduce — Combine Into One Value</h2>
+      <p>Most powerful. Takes accumulator + current item. Returns single value.</p>
+      <pre><code>const nums = [1, 2, 3, 4];
+const sum = nums.reduce((total, n) => total + n, 0);
+// 0 + 1 + 2 + 3 + 4 = 10
+
+const cart = [
+  {price: 10, qty: 2},
+  {price: 5, qty: 3}
+];
+const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+// 10*2 + 5*3 = 35</code></pre>
+      <p><strong>Params:</strong> <code>reduce((accumulator, current) => {}, initialValue)</code></p>
+
+      <h2>5. find & findIndex — Get One Item</h2>
+      <pre><code>const users = [
+  {id: 1, name: "Alex"},
+  {id: 2, name: "Sam"}
+];
+
+const user = users.find(u => u.id === 2);
+// {id: 2, name: "Sam"}
+
+const idx = users.findIndex(u => u.name === "Alex");
+// 0
+// Returns undefined or -1 if not found</code></pre>
+
+      <h2>6. forEach — Do Something With Each</h2>
+      <p>Like a for loop. No return value. Use for side effects.</p>
+      <pre><code>const logs = ["error", "warn", "info"];
+logs.forEach((log, i) => {
+  console.log(`${i}: ${log}`);
+});
+// 0: error, 1: warn, 2: info</code></pre>
+
+      <h2>7. some & every — Test Items</h2>
+      <pre><code>const nums = [2, 4, 6, 7];
+nums.some(n => n % 2 === 1); // true - at least one odd
+nums.every(n => n > 0); // true - all positive</code></pre>
+
+      <h2>8. Chaining Methods</h2>
+      <p>Combine them. Each returns an array, so you can call another.</p>
+      <pre><code>const data = [1, 2, 3, 4, 5, 6];
+
+const result = data
+ .filter(n => n % 2 === 0) // [2, 4, 6]
+ .map(n => n * 10) // [20, 40, 60]
+ .reduce((sum, n) => sum + n, 0); // 120</code></pre>
+
+      <h2>9. Common Mistakes</h2>
+      <ul>
+        <li><strong>Forgetting return:</strong> <code>arr.map(x => { x * 2 })</code> returns <code>[undefined, undefined]</code>. Use <code>x => x * 2</code> or <code>{ return x * 2 }</code></li>
+        <li><strong>Mutating in map:</strong> Don't <code>arr.map(x => arr.push(x))</code>. Map should be pure</li>
+        <li><strong>reduce without initial:</strong> <code>[].reduce((a,b) => a+b)</code> crashes. Always pass initial value</li>
+      </ul>
+
+      <h2>10. Mutating vs Non-Mutating</h2>
+      <table>
+        <tr><th>Mutates Original</th><th>Returns New Array</th></tr>
+        <tr><td><code>push, pop, shift, splice, sort</code></td><td><code>map, filter, slice, concat</code></td></tr>
+      </table>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Transform arrays with <code>map</code></li>
+        <li>Filter arrays with <code>filter</code></li>
+        <li>Combine values with <code>reduce</code></li>
+        <li>Find items with <code>find</code> and <code>findIndex</code></li>
+        <li>Test arrays with <code>some</code> and <code>every</code></li>
+        <li>Chain methods for data pipelines</li>
+      </ul>
+    </section>
+
+    <a href="/editor-09.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+        </html>
