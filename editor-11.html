@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: LocalStorage — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="11">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Persistent Counter</h2>
+      <a href="/lesson-11.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create functions <code>loadCount</code> and <code>saveCount</code>:</p>
+      <ol>
+        <li><code>loadCount()</code> returns number from localStorage key "count", or 0 if missing</li>
+        <li><code>saveCount(n)</code> saves number <code>n</code> to localStorage key "count"</li>
+        <li>Hook them up so clicking increments and persists</li>
+      </ol>
+    </div>
+
+    <div style="border:1px solid var(--border);padding:12px;margin:16px 0;border-radius:8px;">
+      <h3>Live Counter:</h3>
+      <p>Count: <span id="count">0</span></p>
+      <button id="incBtn">Increment</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <div id="editor" style="height:420px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 11,
+      starterCode: "// 1. loadCount: get 'count' from localStorage, return as number, default 0\n// 2. saveCount: save number to 'count' in localStorage\n// 3. Update the DOM on click\n\nfunction loadCount() {\n \n}\n\nfunction saveCount(n) {\n \n}\n\n// Setup\nlet count = loadCount();\ndocument.getElementById('count').textContent = count;\n\ndocument.getElementById('incBtn').onclick = () => {\n \n};\n\ndocument.getElementById('resetBtn').onclick = () => {\n \n};",
+      solution: "function loadCount() {\n return parseInt(localStorage.getItem('count') || '0');\n}\n\nfunction saveCount(n) {\n localStorage.setItem('count', n);\n}\n\nlet count = loadCount();\ndocument.getElementById('count').textContent = count;\n\ndocument.getElementById('incBtn').onclick = () => {\n count++;\n saveCount(count);\n document.getElementById('count').textContent = count;\n};\n\ndocument.getElementById('resetBtn').onclick = () => {\n count = 0;\n saveCount(count);\n document.getElementById('count').textContent = count;\n};",
+      hints: [
+        "loadCount: return parseInt(localStorage.getItem('count') || '0');",
+        "saveCount: localStorage.setItem('count', n);",
+        "On click: count++; saveCount(count); update textContent"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = () => {
+      const code = window.editor.getValue();
+      localStorage.removeItem('count'); // Clear for test
+      let pass = true;
+      let msg = '';
+      document.getElementById('test-results').innerHTML = '<div>Running tests...</div>';
+      
+      try {
+        // Reset DOM
+        document.getElementById('count').textContent = '0';
+        const oldInc = document.getElementById('incBtn');
+        const oldReset = document.getElementById('resetBtn');
+        oldInc.replaceWith(oldInc.cloneNode(true));
+        oldReset.replaceWith(oldReset.cloneNode(true));
+        
+        eval(code); // Run user code to set up functions and listeners
+        
+        // Test 1: Initial load should be 0
+        if (document.getElementById('count').textContent !== '0') {
+          pass = false; msg = 'Initial count should load as 0';
+        }
+        
+        // Test 2: Increment persists
+        document.getElementById('incBtn').click();
+        if (document.getElementById('count').textContent !== '1') {
+          pass = false; msg = 'Increment should set count to 1';
+        }
+        if (localStorage.getItem('count') !== '1') {
+          pass = false; msg = 'Increment should save to localStorage';
+        }
+        
+        // Test 3: Reset works
+        document.getElementById('resetBtn').click();
+        if (document.getElementById('count').textContent !== '0') {
+          pass = false; msg = 'Reset should set count to 0';
+        }
+        
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓ Refresh the page — count should persist.</div>';
+        setTimeout(() => location.href = '/quiz-11.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
