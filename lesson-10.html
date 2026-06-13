@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 10: Async JS & Promises — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="10">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 10: Async JS & Promises</h1>
+      <span class="badge">medium · 60 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. Sync vs Async</h2>
+      <p>JS runs one thing at a time. Sync code blocks. Async code says "start this, I'll check back later".</p>
+      
+      <pre><code>// Sync - blocks
+console.log("1");
+alert("Blocks here"); // Page freezes
+console.log("3");
+
+// Async - non-blocking
+console.log("1");
+setTimeout(() => console.log("2"), 1000);
+console.log("3");
+// Output: 1, 3, 2</code></pre>
+
+      <h2>2. Callbacks: The Old Way</h2>
+      <p>Pass a function to run later. Leads to "callback hell" when nested.</p>
+      <pre><code>function getUser(id, callback) {
+  setTimeout(() => {
+    callback({ id, name: "Alex" });
+  }, 1000);
+}
+
+getUser(1, (user) => {
+  console.log(user.name); // "Alex" after 1s
+});</code></pre>
+
+      <h2>3. Promises: Better Async</h2>
+      <p>Promise = placeholder for future value. 3 states: pending, fulfilled, rejected.</p>
+      <pre><code>const fetchData = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const success = true;
+    if (success) {
+      resolve("Data loaded");
+    } else {
+      reject("Error loading");
+    }
+  }, 1000);
+});
+
+fetchData
+  .then(data => console.log(data)) // "Data loaded"
+  .catch(err => console.log(err));</code></pre>
+
+      <h2>4. Chaining Promises</h2>
+      <pre><code>function getUser(id) {
+  return Promise.resolve({ id, name: "Alex" });
+}
+
+function getPosts(userId) {
+  return Promise.resolve(["Post 1", "Post 2"]);
+}
+
+getUser(1)
+  .then(user => getPosts(user.id))
+  .then(posts => console.log(posts)) // ["Post 1", "Post 2"]
+  .catch(err => console.log("Failed:", err));</code></pre>
+
+      <h2>5. async/await: Modern Syntax</h2>
+      <p>Write async code like sync. Must be inside <code>async</code> function. Use <code>try/catch</code> for errors.</p>
+      <pre><code>async function loadUser() {
+  try {
+    const user = await getUser(1); // waits here
+    const posts = await getPosts(user.id);
+    console.log(user.name, posts);
+  } catch (err) {
+    console.log("Error:", err);
+  }
+}
+
+loadUser();</code></pre>
+
+      <h2>6. fetch() — Real API Calls</h2>
+      <p><code>fetch</code> returns a Promise. Must await twice: once for response, once for JSON.</p>
+      <pre><code>async function getJoke() {
+  const res = await fetch("https://api.chucknorris.io/jokes/random");
+  const data = await res.json();
+  console.log(data.value);
+}
+
+getJoke();</code></pre>
+
+      <h2>7. Promise.all — Run in Parallel</h2>
+      <pre><code>async function loadAll() {
+  const [user, posts] = await Promise.all([
+    getUser(1),
+    getPosts(1)
+  ]);
+  console.log(user, posts);
+}
+// Faster than awaiting one by one</code></pre>
+
+      <h2>8. Common Mistakes</h2>
+      <ul>
+        <li><strong>Forgetting await:</strong> <code>const data = fetch(url)</code> gives Promise, not data. Use <code>await fetch(url)</code></li>
+        <li><strong>No try/catch:</strong> Unhandled rejection crashes in async/await</li>
+        <li><strong>Blocking with await:</strong> <code>await x; await y;</code> runs serial. Use <code>Promise.all</code> for parallel</li>
+        <li><strong>Not returning in .then:</strong> Breaks chain. Always return for next <code>.then</code></li>
+      </ul>
+
+      <h2>9. Real Example: Load Profile</h2>
+      <pre><code>async function loadProfile(userId) {
+  try {
+    const res = await fetch(`/api/users/${userId}`);
+    if (!res.ok) throw new Error("User not found");
+    const user = await res.json();
+    document.getElementById("name").textContent = user.name;
+  } catch (err) {
+    document.getElementById("error").textContent = err.message;
+  }
+}</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Explain sync vs async code</li>
+        <li>Create and consume Promises with <code>.then/.catch</code></li>
+        <li>Write async functions with <code>async/await</code></li>
+        <li>Handle errors with <code>try/catch</code></li>
+        <li>Fetch data from APIs</li>
+        <li>Run Promises in parallel with <code>Promise.all</code></li>
+      </ul>
+    </section>
+
+    <a href="/editor-10.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+</html>
