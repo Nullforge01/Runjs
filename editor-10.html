@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code: Async JS — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="10">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h2>Challenge: Async/Await</h2>
+      <a href="/lesson-10.html" class="btn btn-ghost">← Read Notes Again</a>
+    </div>
+
+    <div class="challenge-desc">
+      <p><strong>Task:</strong> Create async function <code>delayedGreet</code> that:</p>
+      <ol>
+        <li>Takes <code>name</code> and <code>ms</code> parameters</li>
+        <li>Waits <code>ms</code> milliseconds using a Promise + setTimeout</li>
+        <li>Returns string <code>"Hello, [name]!"</code></li>
+      </ol>
+      <p>Example: <code>await delayedGreet("Alex", 100)</code> → <code>"Hello, Alex!"</code> after 100ms</p>
+    </div>
+
+    <div id="editor" style="height:420px;border:1px solid var(--border);margin:16px 0;"></div>
+
+    <div class="editor-actions">
+      <button id="run-code" class="btn btn-primary">Run Tests</button>
+      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
+    </div>
+    <div id="test-results"></div>
+    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    const lesson = {
+      id: 10,
+      starterCode: "// Create async function delayedGreet(name, ms)\n// 1. Return a Promise that resolves after ms\n// 2. Promise should resolve to `Hello, ${name}!`\n\nasync function delayedGreet(name, ms) {\n \n}",
+      solution: "async function delayedGreet(name, ms) {\n return new Promise(resolve => {\n setTimeout(() => {\n resolve(`Hello, ${name}!`);\n }, ms);\n });\n}",
+      hints: [
+        "Wrap setTimeout in new Promise: return new Promise(resolve => {...})",
+        "Inside setTimeout: resolve(`Hello, ${name}!`);",
+        "Make sure function is async, but Promise works without it too"
+      ]
+    };
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], () => {
+      window.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: lesson.starterCode,
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    });
+
+    let hintIndex = 0;
+    document.getElementById('show-hint').onclick = () => {
+      const box = document.getElementById('hint-box');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="hint">💡 Hint ${hintIndex+1}: ${lesson.hints[hintIndex]}</div>`;
+      hintIndex = (hintIndex + 1) % lesson.hints.length;
+    };
+
+    document.getElementById('run-code').onclick = async () => {
+      const code = window.editor.getValue();
+      let pass = true;
+      let msg = '';
+      document.getElementById('test-results').innerHTML = '<div>Running tests...</div>';
+      
+      try {
+        const userCode = new Function(code + '; return delayedGreet;');
+        const delayedGreet = userCode();
+        if (typeof delayedGreet!== 'function') throw new Error('delayedGreet should be a function');
+        
+        const start = Date.now();
+        const result = await delayedGreet('Test', 50);
+        const elapsed = Date.now() - start;
+        
+        if (result!== 'Hello, Test!') { pass = false; msg = 'Should return "Hello, Test!"'; }
+        else if (elapsed < 45) { pass = false; msg = 'Should wait at least 50ms'; }
+        
+      } catch(e) {
+        pass = false; msg = e.message;
+      }
+
+      if (pass) {
+        document.getElementById('test-results').innerHTML = '<div class="success">All tests passed! ✓</div>';
+        setTimeout(() => location.href = '/quiz-10.html', 1200);
+      } else {
+        document.getElementById('test-results').innerHTML = `<div class="error">Failed: ${msg}</div>`;
+      }
+    };
+  </script>
+</body>
+</html>
