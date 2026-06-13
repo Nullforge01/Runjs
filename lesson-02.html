@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 02: Functions — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="2">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 2: Functions</h1>
+      <span class="badge">easy · 30 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. What Are Functions?</h2>
+      <p>Functions are reusable blocks of code that perform a specific task. Write once, run many times. Like a recipe you can follow whenever you need that dish.</p>
+      
+      <pre><code>// Function definition
+function greet() {
+  console.log("Hello!");
+}
+
+// Call the function
+greet(); // prints: Hello!</code></pre>
+
+      <h2>2. Function Parts</h2>
+      <pre><code>function add(a, b) {  // a, b are parameters
+  return a + b;       // return sends value back
+}
+
+const sum = add(5, 3); // 5, 3 are arguments
+console.log(sum); // 8</code></pre>
+      
+      <p><strong>Key terms:</strong></p>
+      <ul>
+        <li><code>function</code> keyword → declares it</li>
+        <li><code>add</code> → function name</li>
+        <li><code>(a, b)</code> → parameters = placeholders for input</li>
+        <li><code>return</code> → output value. If no return, function gives <code>undefined</code></li>
+        <li><code>add(5, 3)</code> → calling/invoking with arguments</li>
+      </ul>
+
+      <h2>3. Types of Functions</h2>
+      
+      <h3>Function Declaration</h3>
+      <p>Hoisted — you can call it before it’s defined.</p>
+      <pre><code>sayHi(); // Works!
+
+function sayHi() {
+  console.log("Hi");
+}</code></pre>
+
+      <h3>Function Expression</h3>
+      <p>Stored in a variable. Not hoisted.</p>
+      <pre><code>const sayBye = function() {
+  console.log("Bye");
+};
+
+sayBye(); // Must call after definition</code></pre>
+
+      <h3>Arrow Function — ES6+ Short Syntax</h3>
+      <pre><code>const multiply = (x, y) => {
+  return x * y;
+};
+
+// Implicit return if one-liner
+const square = n => n * n;
+
+console.log(square(4)); // 16</code></pre>
+
+      <h2>4. Parameters vs Arguments</h2>
+      <pre><code>function login(username, password) { // parameters
+  // ...
+}
+
+login("alex", "1234"); // arguments</code></pre>
+
+      <h3>Default Parameters</h3>
+      <pre><code>function greet(name = "Guest") {
+  return `Hello, ${name}`;
+}
+
+greet(); // "Hello, Guest"
+greet("Sarah"); // "Hello, Sarah"</code></pre>
+
+      <h2>5. Why Use Functions?</h2>
+      <ul>
+        <li><strong>DRY</strong> — Don’t Repeat Yourself. Reuse code.</li>
+        <li><strong>Organization</strong> — Break big problems into small pieces</li>
+        <li><strong>Testing</strong> — Test one function at a time</li>
+        <li><strong>Readability</strong> — <code>calculateTax()</code> is clearer than 10 lines of math</li>
+      </ul>
+
+      <h2>6. Common Mistakes</h2>
+      <ul>
+        <li><strong>Forgetting to call:</strong> <code>greet</code> does nothing. <code>greet()</code> runs it</li>
+        <li><strong>Forgetting return:</strong> Function returns <code>undefined</code> by default</li>
+        <li><strong>Wrong parameter order:</strong> <code>add(3, 5)</code> vs <code>subtract(3, 5)</code> gives different results</li>
+      </ul>
+
+      <h2>7. Real Examples</h2>
+      <pre><code>// Calculate area
+const getArea = (width, height) => width * height;
+
+// Check if user can vote
+function canVote(age) {
+  return age >= 18;
+}
+
+// Format currency
+const toUSD = amount => `$${amount.toFixed(2)}`;
+
+console.log(getArea(5, 10)); // 50
+console.log(canVote(20)); // true
+console.log(toUSD(19.9)); // $19.90</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Define functions with declarations, expressions, and arrows</li>
+        <li>Pass arguments and use parameters</li>
+        <li>Return values from functions</li>
+        <li>Use default parameters</li>
+        <li>Understand when/why to use functions</li>
+      </ul>
+    </section>
+
+    <a href="/editor-02.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+  </html>
