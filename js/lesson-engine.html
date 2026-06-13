@@ -1,0 +1,472 @@
+/* ===================================
+   RunJS v2.1 - Lesson Engine
+   Monaco • Test Runner • Auto-Grading
+   =================================== */
+
+const Lesson = {
+  id: null,
+  data: null,
+  editor: null,
+  currentHint: 0,
+  testResults: [],
+  
+  async init() {
+    this.id = parseInt(document.body.dataset.lessonId);
+    if (!this.id) return;
+    
+    await this.loadLessonData();
+    this.initMonaco();
+    this.bindEvents();
+    this.updateUI();
+    this.loadProgress();
+    console.log(`Lesson ${this.id} initialized`);
+  },
+
+  // === 1. Load Lesson Data ===
+  async loadLessonData() {
+    try {
+      const res = await fetch('data/lessons.json');
+      const allLessons = await res.json();
+      this.data = allLessons.find(l => l.id === this.id);
+      
+      if (!this.data) throw new Error('Lesson not found');
+    } catch (e) {
+      console.error('Failed to load lesson:', e);
+      RunJS.toast('Failed to load lesson data', 'error');
+    }
+  },
+
+  // === 2. Monaco Editor Setup ===
+  initMonaco() {
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    
+    require(['vs/editor/editor.main'], () => {
+      const container = document.getElementById('editorContainer');
+      if (!container) return;
+
+      const savedCode = localStorage.getItem(`runjs_lesson_${this.id}_code`);
+      const initialCode = savedCode || this.data.starterCode || '// Write your code here\n';
+
+      this.editor = monaco.editor.create(container, {
+        value: initialCode,
+        language: 'javascript',
+        theme: RunJS.state.theme === 'dark' ? 'vs-dark' : 'vs',
+        fontSize: RunJS.state.settings.fontSize || 14,
+        fontFamily: 'Fira Code, monospace',
+        minimap: { enabled: false },
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        tabSize: 2,
+        wordWrap: 'on',
+        lineNumbers: 'on',
+        renderLineHighlight: 'all',
+        suggestOnTriggerCharacters: true
+      });
+
+      // Auto-save on change
+      this.editor.onDidChangeModelContent(
+        RunJS.debounce(() => this.saveCode(), 1000)
+      );
+
+      // Keyboard shortcuts
+      this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+        this.runCode();
+      });
+
+      container.querySelector('.editor-loading')?.remove();
+    });
+  },
+
+  saveCode() {
+    if (!this.editor) return;
+    const code = this.editor.getValue();
+    localStorage.setItem(`runjs_lesson_${this.id}_code`, code);
+  },
+
+  // === 3. UI Updates ===
+  updateUI() {
+    if (!this.data) return;
+
+    // Update header
+    document.getElementById('lessonNumber').textContent = `Lesson ${String(this.id).padStart(2, '0')}`;
+    document.getElementById('lessonTitle').textContent = this.data.title;
+    document.getElementById('lessonDesc').textContent = this.data.desc;
+    
+    const diffEl = document.getElementById('lessonDifficulty');
+    diffEl.textContent = this.data.difficulty;
+    diffEl.className = `lesson-difficulty ${this.data.difficulty}`;
+
+    // Objectives
+    const objectivesList = document.getElementById('objectivesList');
+    objectivesList.innerHTML = this.data.objectives
+      .map(obj => `<li>${obj}</li>`)
+      .join('');
+
+    // Task description
+    document.getElementById('taskDescription').innerHTML = this.data.desc;
+
+    // Solution
+    document.getElementById('solutionCode').textContent = this.data.solution;
+
+    // Navigation buttons
+    const prevBtn = document.getElementById('prevLessonBtn');
+    const nextBtn = document.getElementById('nextLessonBtn');
+    
+    prevBtn.disabled = this.id === 1;
+    prevBtn.onclick = () => this.navigateLesson(this.id - 1);
+    
+    const isCompleted = RunJS.state.completedLessons.includes(this.id);
+    const isLast = this.id === 25;
+    nextBtn.disabled = !isCompleted;
+    nextBtn.textContent = isLast ? 'Complete Course →' : 'Next Lesson →';
+    nextBtn.onclick = () => this.navigateLesson(this.id + 1);
+
+    // Bookmark state
+    this.updateBookmarkButton();
+
+    // Update page title
+    document.title = `Lesson ${String(this.id).padStart(2, '0')}: ${this.data.title} — RunJS`;
+  },
+
+  updateBookmarkButton() {
+    const btn = document.getElementById('bookmarkLesson');
+    const isBookmarked = RunJS.state.bookmarks.includes(this.id);
+    btn.textContent = isBookmarked ? '⭐' : '☆';
+    btn.setAttribute('aria-label', isBookmarked ? 'Remove bookmark' : 'Bookmark lesson');
+  },
+
+  // === 4. Events ===
+  bindEvents() {
+    // Tab switching
+    document.querySelectorAll('.lesson-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.lesson-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
+        
+        e.target.classList.add('active');
+        const panelId = e.target.dataset.tab + 'Panel';
+        document.getElementById(panelId).hidden = false;
+      });
+    });
+
+    // Output tabs
+    document.querySelectorAll('.output-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.output-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.output-content').forEach(c => c.hidden = true);
+        
+        e.target.classList.add('active');
+        const outputId = e.target.dataset.output + 'Output';
+        document.getElementById(outputId).hidden = false;
+      });
+    });
+
+    // Buttons
+    document.getElementById('runCodeBtn')?.addEventListener('click', () => this.runCode());
+    document.getElementById('resetCodeBtn')?.addEventListener('click', () => this.resetCode());
+    document.getElementById('formatCodeBtn')?.addEventListener('click', () => this.formatCode());
+    document.getElementById('bookmarkLesson')?.addEventListener('click', () => this.toggleBookmark());
+    document.getElementById('revealHintBtn')?.addEventListener('click', () => this.revealHint());
+    document.getElementById('copySolutionBtn')?.addEventListener('click', () => this.copySolution());
+
+    // Theme sync with Monaco
+    document.addEventListener('themeChanged', () => {
+      if (this.editor) {
+        monaco.editor.setTheme(RunJS.state.theme === 'dark' ? 'vs-dark' : 'vs');
+      }
+    });
+  },
+
+  // === 5. Code Execution ===
+  async runCode() {
+    if (!this.editor) return;
+    
+    const code = this.editor.getValue();
+    const consoleOutput = document.getElementById('consoleOutput');
+    consoleOutput.innerHTML = '';
+    
+    // Switch to console tab
+    document.querySelector('[data-output="console"]').click();
+
+    try {
+      // Create sandboxed iframe for execution
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      
+      const logs = [];
+      iframe.contentWindow.console = {
+        log: (...args) => {
+          logs.push({ type: 'log', message: args.join(' ') });
+          this.appendConsole(args.join(' '), 'log');
+        },
+        error: (...args) => {
+          logs.push({ type: 'error', message: args.join(' ') });
+          this.appendConsole(args.join(' '), 'error');
+        },
+        warn: (...args) => {
+          logs.push({ type: 'warn', message: args.join(' ') });
+          this.appendConsole(args.join(' '), 'warn');
+        }
+      };
+
+      // Wrap code to capture return value
+      const wrappedCode = `
+        try {
+          ${code}
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      `;
+
+      const result = iframe.contentWindow.eval(wrappedCode);
+      if (result !== undefined) {
+        this.appendConsole(`→ ${JSON.stringify(result)}`, 'log');
+      }
+
+      document.body.removeChild(iframe);
+      
+      // Run tests after successful execution
+      await this.runTests(code, logs);
+      
+    } catch (error) {
+      this.appendConsole(error.message, 'error');
+      this.showTestResults([{ name: 'Code Execution', pass: false, message: error.message }]);
+    }
+  },
+
+  appendConsole(message, type = 'log') {
+    const consoleOutput = document.getElementById('consoleOutput');
+    const line = document.createElement('div');
+    line.className = `console-line ${type}`;
+    line.textContent = message;
+    consoleOutput.appendChild(line);
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+  },
+
+  // === 6. Test Runner ===
+  async runTests(userCode, logs) {
+    if (!this.data.tests) return;
+
+    this.testResults = [];
+    const testsList = document.getElementById('testsList');
+    testsList.innerHTML = '';
+
+    // Switch to tests tab
+    document.querySelector('[data-output="tests"]').click();
+
+    for (const test of this.data.tests) {
+      const result = await this.runSingleTest(test, userCode, logs);
+      this.testResults.push(result);
+      this.renderTestResult(result);
+    }
+
+    const passed = this.testResults.filter(t => t.pass).length;
+    const total = this.testResults.length;
+    
+    const badge = document.getElementById('testBadge');
+    badge.textContent = `${passed}/${total}`;
+    badge.className = `test-badge ${passed === total ? 'pass' : ''}`;
+
+    // Auto-complete lesson if all tests pass
+    if (passed === total && total > 0) {
+      this.completeLesson();
+    }
+  },
+
+  async runSingleTest(test, userCode, logs) {
+    try {
+      // Create isolated context
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      const ctx = iframe.contentWindow;
+
+      // Execute user code in context
+      ctx.eval(userCode);
+
+      let pass = false;
+      let message = '';
+
+      switch (test.type) {
+        case 'variable':
+          const val = ctx[test.name];
+          if (test.expectedType) {
+            pass = typeof val === test.expectedType;
+            message = pass ? `✓ ${test.name} is ${test.expectedType}` : `✗ ${test.name} should be ${test.expectedType}, got ${typeof val}`;
+          } else if (test.expectedValue !== undefined) {
+            pass = JSON.stringify(val) === JSON.stringify(test.expectedValue);
+            message = pass ? `✓ ${test.name} = ${JSON.stringify(test.expectedValue)}` : `✗ ${test.name} should be ${JSON.stringify(test.expectedValue)}`;
+          }
+          break;
+
+        case 'function':
+          const fn = ctx[test.name];
+          if (typeof fn !== 'function') {
+            pass = false;
+            message = `✗ Function ${test.name} not found`;
+          } else {
+            const result = fn(...test.args);
+            pass = JSON.stringify(result) === JSON.stringify(test.expected);
+            message = pass ? `✓ ${test.name}(${test.args.join(', ')}) = ${JSON.stringify(test.expected)}` : `✗ Expected ${JSON.stringify(test.expected)}, got ${JSON.stringify(result)}`;
+          }
+          break;
+
+        case 'return':
+          const returnVal = ctx.eval(userCode);
+          pass = JSON.stringify(returnVal) === JSON.stringify(test.expected);
+          message = pass ? `✓ Returns ${JSON.stringify(test.expected)}` : `✗ Expected ${JSON.stringify(test.expected)}`;
+          break;
+
+        case 'property':
+          const obj = ctx[test.object];
+          const prop = obj[test.name];
+          pass = test.expectedType ? typeof prop === test.expectedType : prop === test.expected;
+          message = pass ? `✓ ${test.object}.${test.name} correct` : `✗ ${test.object}.${test.name} incorrect`;
+          break;
+
+        case 'method':
+          const obj2 = test.object === "'hello'" ? 'hello' : ctx[test.object];
+          const methodResult = obj2[test.name]();
+          pass = methodResult === test.expected;
+          message = pass ? `✓ ${test.name}() = ${test.expected}` : `✗ Expected ${test.expected}, got ${methodResult}`;
+          break;
+
+        case 'expression':
+          const exprResult = ctx.eval(test.code);
+          pass = exprResult === test.expected;
+          message = pass ? `✓ Expression correct` : `✗ Expected ${test.expected}`;
+          break;
+
+        default:
+          pass = false;
+          message = `✗ Unknown test type: ${test.type}`;
+      }
+
+      document.body.removeChild(iframe);
+      return { name: test.name || test.type, pass, message };
+
+    } catch (e) {
+      return { name: test.name || test.type, pass: false, message: `✗ Error: ${e.message}` };
+    }
+  },
+
+  renderTestResult(result) {
+    const testsList = document.getElementById('testsList');
+    const item = document.createElement('div');
+    item.className = `test-item ${result.pass ? 'pass' : 'fail'}`;
+    item.innerHTML = `
+      <span class="test-icon">${result.pass ? '✓' : '✗'}</span>
+      <span class="test-name">${result.message}</span>
+    `;
+    testsList.appendChild(item);
+  },
+
+  // === 7. Lesson Completion ===
+  completeLesson() {
+    const completed = RunJS.state.completedLessons || [];
+    if (!completed.includes(this.id)) {
+      completed.push(this.id);
+      RunJS.updateState('completedLessons', completed);
+      RunJS.addXP(this.data.xp);
+      RunJS.toast(`Lesson complete! +${this.data.xp} XP`, 'success');
+      
+      // Enable next lesson button
+      document.getElementById('nextLessonBtn').disabled = false;
+      
+      // Update sidebar
+      Sidebar.refresh();
+      
+      // Confetti effect
+      this.celebrate();
+    }
+  },
+
+  celebrate() {
+    // Simple confetti using CSS animation
+    const confetti = document.createElement('div');
+    confetti.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;';
+    confetti.innerHTML = '🎉'.repeat(20);
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 2000);
+  },
+
+  // === 8. Utilities ===
+  resetCode() {
+    if (!this.editor || !confirm('Reset code to starter template?')) return;
+    this.editor.setValue(this.data.starterCode);
+    this.saveCode();
+    RunJS.toast('Code reset', 'success');
+  },
+
+  formatCode() {
+    if (!this.editor) return;
+    this.editor.getAction('editor.action.formatDocument').run();
+  },
+
+  toggleBookmark() {
+    const bookmarks = RunJS.state.bookmarks || [];
+    const idx = bookmarks.indexOf(this.id);
+    
+    if (idx > -1) {
+      bookmarks.splice(idx, 1);
+      RunJS.toast('Bookmark removed', 'success');
+    } else {
+      bookmarks.push(this.id);
+      RunJS.toast('Lesson bookmarked', 'success');
+    }
+    
+    RunJS.updateState('bookmarks', bookmarks);
+    this.updateBookmarkButton();
+    Sidebar.refresh();
+  },
+
+  revealHint() {
+    const hintsList = document.getElementById('hintsList');
+    if (this.currentHint >= this.data.hints.length) {
+      RunJS.toast('No more hints!', 'warning');
+      return;
+    }
+    
+    const hint = this.data.hints[this.currentHint];
+    const hintEl = document.createElement('div');
+    hintEl.className = 'hint-item';
+    hintEl.textContent = `${this.currentHint + 1}. ${hint}`;
+    hintsList.appendChild(hintEl);
+    
+    this.currentHint++;
+    
+    if (this.currentHint >= this.data.hints.length) {
+      document.getElementById('revealHintBtn').disabled = true;
+    }
+  },
+
+  copySolution() {
+    navigator.clipboard.writeText(this.data.solution);
+    RunJS.toast('Solution copied to clipboard', 'warning');
+  },
+
+  navigateLesson(id) {
+    if (id < 1 || id > 25) return;
+    window.location.href = `lesson-${String(id).padStart(2, '0')}.html`;
+  },
+
+  loadProgress() {
+    const savedCode = localStorage.getItem(`runjs_lesson_${this.id}_code`);
+    if (savedCode && this.editor) {
+      this.editor.setValue(savedCode);
+    }
+  }
+};
+
+// Auto-init
+if (window.RunJS) {
+  Lesson.init();
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.RunJS) Lesson.init();
+  });
+}
+
+window.Lesson = Lesson;
