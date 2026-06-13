@@ -20,15 +20,22 @@
       </ol>
       <p>Example: <code>double(4)</code> should return <code>8</code></p>
     </div>
+<div id="editor"></div>
 
-    <div id="editor" style="height:350px;border:1px solid var(--border);margin:16px 0;"></div>
-    
-    <div class="editor-actions">
-      <button id="run-code" class="btn btn-primary">Run Tests</button>
-      <button id="show-hint" class="btn btn-ghost">Show Hint</button>
-    </div>
-    <div id="test-results"></div>
-    <div id="hint-box" style="display:none;margin-top:12px;"></div>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+<script>
+  require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+  require(['vs/editor/editor.main'], () => {
+    window.editor = monaco.editor.create(document.getElementById('editor'), {
+      value: lesson.starterCode,
+      language: 'javascript',
+      theme: 'vs-dark',
+      automaticLayout: true,
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false
+    });
+  });
+</script>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
