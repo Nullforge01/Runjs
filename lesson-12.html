@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 12: Final Project — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="12">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 12: Final Project</h1>
+      <span class="badge">hard · 100 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>Build a Real Todo App</h2>
+      <p>You've learned variables, functions, arrays, objects, DOM, events, async, and localStorage. Time to combine everything.</p>
+
+      <h2>Project Requirements</h2>
+      <p>Build a todo app that does this:</p>
+      <ol>
+        <li><strong>Add todos:</strong> Type in input, click Add, todo appears in list</li>
+        <li><strong>Mark done:</strong> Click todo to toggle complete. Add class "done"</li>
+        <li><strong>Delete todos:</strong> Each todo has a delete button</li>
+        <li><strong>Persist data:</strong> Todos save to localStorage. Reload keeps them</li>
+        <li><strong>Filter:</strong> Show All, Active, or Completed todos</li>
+        <li><strong>Counter:</strong> Show "X items left" for active todos</li>
+      </ol>
+
+      <h2>Data Structure</h2>
+      <p>Store todos as array of objects:</p>
+      <pre><code>const todos = [
+  { id: 1, text: "Learn JS", done: false },
+  { id: 2, text: "Build app", done: true }
+];</code></pre>
+
+      <h2>Key Techniques You'll Use</h2>
+      <table>
+        <tr><th>Feature</th><th>Concepts</th></tr>
+        <tr><td>Add todo</td><td>DOM, events, array.push, localStorage</td></tr>
+        <tr><td>Render list</td><td>map, innerHTML/textContent, forEach</td></tr>
+        <tr><td>Toggle done</td><td>find, event delegation, classList.toggle</td></tr>
+        <tr><td>Delete</td><td>filter, event delegation</td></tr>
+        <tr><td>Filter view</td><td>filter, state variable</td></tr>
+        <tr><td>Persist</td><td>JSON.stringify/parse, localStorage</td></tr>
+      </table>
+
+      <h2>Architecture Plan</h2>
+      <pre><code>// 1. State
+let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+let filter = "all"; // all, active, completed
+
+// 2. Save state
+function saveTodos() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+// 3. Render UI
+function render() {
+  const list = document.getElementById("todo-list");
+  const filtered = todos.filter(t => {
+    if (filter === "active") return !t.done;
+    if (filter === "completed") return t.done;
+    return true;
+  });
+  
+  list.innerHTML = filtered.map(t => `
+    &lt;li data-id="${t.id}" class="${t.done ? 'done' : ''}"&gt;
+      &lt;span&gt;${t.text}&lt;/span&gt;
+      &lt;button class="delete"&gt;×&lt;/button&gt;
+    &lt;/li&gt;
+  `).join("");
+  
+  updateCount();
+}
+
+// 4. Event handlers
+function addTodo(text) { ... }
+function toggleTodo(id) { ... }
+function deleteTodo(id) { ... }
+
+// 5. Init
+render();</code></pre>
+
+      <h2>Event Delegation Tip</h2>
+      <p>Don't add listeners to each todo. Listen on parent list once:</p>
+      <pre><code>document.getElementById("todo-list").addEventListener("click", (e) => {
+  const li = e.target.closest("li");
+  if (!li) return;
+  const id = Number(li.dataset.id);
+  
+  if (e.target.classList.contains("delete")) {
+    deleteTodo(id);
+  } else {
+    toggleTodo(id);
+  }
+});</code></pre>
+
+      <h2>Common Gotchas</h2>
+      <ul>
+        <li><strong>ID generation:</strong> Use <code>Date.now()</code> or increment counter for unique IDs</li>
+        <li><strong>Re-render after change:</strong> Always call <code>render()</code> after modifying todos</li>
+        <li><strong>XSS:</strong> Use <code>textContent</code> for user input, not <code>innerHTML</code></li>
+        <li><strong>Empty input:</strong> Check <code>input.value.trim() === ""</code> before adding</li>
+      </ul>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Manage app state with arrays and objects</li>
+        <li>Sync state to DOM with render function</li>
+        <li>Handle add, toggle, delete with event delegation</li>
+        <li>Persist state with localStorage</li>
+        <li>Filter views without duplicating data</li>
+        <li>Build complete CRUD app from scratch</li>
+      </ul>
+    </section>
+
+    <a href="/editor-12.html" class="btn btn-primary">Start Final Project →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+</html>
