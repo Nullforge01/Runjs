@@ -167,6 +167,41 @@ a:hover{color:var(--accent-hover)}
 .footer-links a:hover{color:var(--text)}
 .footer-bottom{padding-top:var(--space-lg);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-md);font-size:0.875rem;color:var(--text-faint)}
 .footer-studio{color:var(--primary);font-weight:600}
+/* Add to css/style.css */
+.page-header{padding:var(--space-2xl) 0 var(--space-xl);border-bottom:1px solid var(--border)}
+.page-title{font-size:2.5rem;font-weight:800;margin-bottom:var(--space-sm)}
+.page-subtitle{color:var(--text-muted);font-size:1.125rem;margin-bottom:var(--space-xl)}
+.progress-overview{display:flex;flex-direction:column;gap:var(--space-md)}
+.progress-stats{display:flex;gap:var(--space-2xl)}
+.progress-stat{display:flex;flex-direction:column;gap:4px}
+.progress-number{font-size:1.75rem;font-weight:800;color:var(--primary)}
+.progress-label{font-size:0.875rem;color:var(--text-muted)}
+.lessons-filters{padding:var(--space-lg) 0;border-bottom:1px solid var(--border);position:sticky;top:64px;background:rgba(10,10,15,0.8);backdrop-filter:blur(12px);z-index:40}
+[data-theme="light"].lessons-filters{background:rgba(250,250,250,0.8)}
+.filter-tabs{display:flex;gap:var(--space-sm);overflow-x:auto;padding-bottom:2px}
+.filter-tab{padding:0.5rem 1rem;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-muted);font-weight:600;font-size:0.9375rem;white-space:nowrap;transition:all var(--transition)}
+.filter-tab:hover{background:var(--surface);color:var(--text)}
+.filter-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+.lessons-section{padding:var(--space-2xl) 0}
+.lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--space-lg)}
+.lesson-card{padding:var(--space-xl);background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all var(--transition);position:relative}
+.lesson-card:hover{border-color:var(--primary);box-shadow:var(--shadow-glow);transform:translateY(-4px)}
+.lesson-card.locked{opacity:0.5;cursor:not-allowed}
+.lesson-card.locked:hover{transform:none;box-shadow:none;border-color:var(--border)}
+.lesson-card-header{display:flex;align-items:start;justify-content:space-between;margin-bottom:var(--space-md)}
+.lesson-number{font-size:0.875rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.05em}
+.lesson-bookmark{width:32px;height:32px;border-radius:8px;background:var(--bg-hover);color:var(--text-faint);display:grid;place-items:center;transition:all var(--transition)}
+.lesson-bookmark:hover{background:var(--surface);color:var(--warning)}
+.lesson-bookmark.active{color:var(--warning)}
+.lesson-title{font-size:1.25rem;font-weight:700;margin-bottom:var(--space-sm)}
+.lesson-desc{color:var(--text-muted);font-size:0.9375rem;margin-bottom:var(--space-md);line-height:1.5}
+.lesson-meta{display:flex;align-items:center;gap:var(--space-md);font-size:0.875rem;color:var(--text-faint)}
+.lesson-tag{padding:2px 8px;background:var(--surface);border-radius:6px}
+.lesson-status{margin-left:auto;font-weight:600}
+.lesson-status.completed{color:var(--success)}
+.lesson-status.locked{color:var(--text-faint)}
+.skeleton-card{height:200px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-lg);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 
 @media (max-width:768px){
 .footer-grid{grid-template-columns:1fr}
