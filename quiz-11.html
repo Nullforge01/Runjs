@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz: LocalStorage — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="11">
+  <main class="lesson-stage">
+    <h2>Mastery Check: LocalStorage & State</h2>
+
+    <div class="quiz-block">
+      <div class="quiz-q">1. What does localStorage only store?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="0" data-correct="false">Numbers</button>
+        <button class="quiz-option" data-q="0" data-correct="true">Strings</button>
+        <button class="quiz-option" data-q="0" data-correct="false">Objects</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">2. How do you save an object to localStorage?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="1" data-correct="false">localStorage.setItem("key", obj)</button>
+        <button class="quiz-option" data-q="1" data-correct="true">localStorage.setItem("key", JSON.stringify(obj))</button>
+        <button class="quiz-option" data-q="1" data-correct="false">localStorage.save(obj)</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-q">3. What happens to localStorage when you close the tab?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="2" data-correct="false">It's deleted</button>
+        <button class="quiz-option" data-q="2" data-correct="true">It persists</button>
+        <button class="quiz-option" data-q="2" data-correct="false">Only some keys persist</button>
+      </div>
+    </div>
+
+    <div id="quiz-feedback"></div>
+  </main>
+
+  <script>
+    let score = 0;
+    const totalQ = 3;
+    const answered = new Set();
+
+    document.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.onclick = () => {
+        const q = btn.dataset.q;
+        if (answered.has(q)) return;
+        answered.add(q);
+
+        const correct = btn.dataset.correct === 'true';
+        btn.style.borderColor = correct? '#22c55e' : '#ef4444';
+
+        if (correct) score++;
+
+        if (answered.size === totalQ) {
+          const feedback = document.getElementById('quiz-feedback');
+          if (score === totalQ) {
+            feedback.innerHTML = `<div class="success">Perfect! ${score}/${totalQ} · +50 XP · Lesson Mastered!</div>`;
+            const completed = JSON.parse(localStorage.getItem('runjs_completed') || '[]');
+            if (!completed.includes(11)) {
+              completed.push(11);
+              localStorage.setItem('runjs_completed', JSON.stringify(completed));
+              localStorage.setItem('runjs_xp', (parseInt(localStorage.getItem('runjs_xp') || '0') + 50));
+            }
+            setTimeout(() => location.href = '/lesson-12.html', 2000);
+          } else {
+            feedback.innerHTML = `<div class="error">You got ${score}/${totalQ}. Review notes and try again.</div>
+            <a href="/lesson-11.html" class="btn btn-primary" style="margin-top:12px">Review Notes</a>`;
+          }
+        }
+      };
+    });
+  </script>
+</body>
+</html>
