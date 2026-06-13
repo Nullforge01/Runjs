@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 11: LocalStorage & State — RunJS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-lesson-id="11">
+  <main class="lesson-stage">
+    <div class="lesson-header">
+      <h1>Lesson 11: LocalStorage & State</h1>
+      <span class="badge">medium · 50 XP</span>
+    </div>
+
+    <section class="notes">
+      <h2>1. What is State?</h2>
+      <p>State = data your app remembers. Refresh the page and variables reset. LocalStorage keeps data after reload.</p>
+
+      <pre><code>// Variable - gone on refresh
+let count = 0;
+
+// LocalStorage - survives refresh
+localStorage.setItem("count", 0);</code></pre>
+
+      <h2>2. LocalStorage Basics</h2>
+      <p>Key-value store in the browser. Only stores strings. ~5MB limit. Synchronous.</p>
+      <pre><code>// Save
+localStorage.setItem("username", "Alex");
+localStorage.setItem("age", "25"); // converts to string
+
+// Read
+const name = localStorage.getItem("username"); // "Alex"
+const age = localStorage.getItem("age"); // "25" - string!
+
+// Remove
+localStorage.removeItem("age");
+
+// Clear all
+localStorage.clear();</code></pre>
+
+      <h2>3. Storing Objects & Arrays</h2>
+      <p>Must convert to JSON string. Parse when reading back.</p>
+      <pre><code>const user = { name: "Alex", score: 100 };
+
+// Save: stringify
+localStorage.setItem("user", JSON.stringify(user));
+
+// Read: parse
+const saved = localStorage.getItem("user");
+const userObj = saved ? JSON.parse(saved) : null;
+console.log(userObj.name); // "Alex"</code></pre>
+
+      <h2>4. Pattern: Load or Default</h2>
+      <p>Always check if data exists before using. Provide fallback.</p>
+      <pre><code>// Get todos or empty array
+const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+
+// Get settings or defaults
+const theme = localStorage.getItem("theme") || "dark";</code></pre>
+
+      <h2>5. Pattern: Save on Change</h2>
+      <p>Update localStorage every time state changes.</p>
+      <pre><code>let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+
+function addTodo(text) {
+  todos.push({ text, done: false });
+  localStorage.setItem("todos", JSON.stringify(todos));
+  render();
+}</code></pre>
+
+      <h2>6. sessionStorage vs localStorage</h2>
+      <table>
+        <tr><th></th><th>localStorage</th><th>sessionStorage</th></tr>
+        <tr><td>Survives refresh</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Survives tab close</td><td>Yes</td><td>No</td></tr>
+        <tr><td>Shared between tabs</td><td>Yes</td><td>No</td></tr>
+      </table>
+
+      <h2>7. Common Mistakes</h2>
+      <ul>
+        <li><strong>Forgetting JSON:</strong> <code>localStorage.setItem("data", obj)</code> saves "[object Object]". Use <code>JSON.stringify</code></li>
+        <li><strong>Type coercion:</strong> <code>localStorage.getItem("count")</code> returns string. Use <code>parseInt()</code> for numbers</li>
+        <li><strong>Null checks:</strong> <code>JSON.parse(localStorage.getItem("x"))</code> crashes if "x" doesn't exist. Check first</li>
+        <li><strong>Quota exceeded:</strong> 5MB limit. Don't store huge data</li>
+      </ul>
+
+      <h2>8. Real Example: Dark Mode Toggle</h2>
+      <pre><code>const btn = document.getElementById("themeBtn");
+const body = document.body;
+
+// Load saved theme on start
+const savedTheme = localStorage.getItem("theme") || "light";
+body.classList.add(savedTheme);
+
+btn.addEventListener("click", () => {
+  const isDark = body.classList.toggle("dark");
+  body.classList.toggle("light");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});</code></pre>
+    </section>
+
+    <section class="lesson-objectives">
+      <h3>Mastery Checklist:</h3>
+      <ul>
+        <li>Save and read strings with <code>setItem/getItem</code></li>
+        <li>Store objects with <code>JSON.stringify/parse</code></li>
+        <li>Handle missing data with fallbacks</li>
+        <li>Sync app state to localStorage on change</li>
+        <li>Understand localStorage vs sessionStorage</li>
+      </ul>
+    </section>
+
+    <a href="/editor-11.html" class="btn btn-primary">Start Coding Challenge →</a>
+  </main>
+  <script src="/js/core.js"></script>
+</body>
+</html>
