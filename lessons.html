@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — RunJS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .dashboard { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+    .dash-header { margin-bottom: 40px; }
+    .dash-title { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+    .dash-subtitle { color: var(--text-muted); margin-bottom: 24px; }
+    
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .stat-card { 
+      background: var(--bg-secondary); border: 1px solid var(--border); 
+      padding: 20px; border-radius: var(--radius); 
+    }
+    .stat-card h3 { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; font-weight: 400; }
+    .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
+    
+    .progress-wrap { margin-bottom: 40px; }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .progress-bar { 
+      width: 100%; height: 12px; background: var(--bg-tertiary); 
+      border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill { height: 100%; background: var(--primary); transition: width 0.4s ease; }
+    
+    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .lesson-card { 
+      background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); 
+      padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .lesson-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+    .lesson-card.locked { opacity: 0.5; cursor: not-allowed; }
+    .lesson-card.locked:hover { transform: none; border-color: var(--border); }
+    .lesson-card.completed { background: var(--bg-tertiary); }
+    .lesson-card.completed::after { 
+      content: "✓"; position: absolute; top: 16px; right: 16px; 
+      color: var(--success); font-size: 24px; font-weight: 800;
+    }
+    .lesson-num { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .lesson-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .lesson-meta { display: flex; gap: 12px; font-size: 13px; color: var(--text-muted); }
+    .lesson-badge { 
+      padding: 4px 10px; border-radius: 20px; background: var(--bg); 
+      border: 1px solid var(--border); 
+    }
+    
+    .continue-card {
+      background: linear-gradient(135deg, var(--primary), #A78BFA);
+      color: white; grid-column: 1 / -1;
+    }
+    .continue-card .lesson-meta, .continue-card .lesson-num { color: rgba(255,255,255,0.8); }
+    .continue-card:hover { transform: translateY(-3px); border-color: transparent; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      <header class="nav">
+        <div class="nav-inner">
+          <a href="index.html" class="nav-brand">Run<span>JS</span></a>
+          <div class="nav-actions">
+            <button class="btn-icon" id="themeToggle">🌙</button>
+            <a href="playground.html" class="btn-ghost">Playground</a>
+            <a href="leaderboard.html" class="btn-ghost">Leaderboard</a>
+            <a href="settings.html" class="btn-icon">⚙️</a>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard">
+        <div class="dash-header">
+          <h1 class="dash-title">Your Journey</h1>
+          <p class="dash-subtitle">Keep shipping. Master JavaScript one lesson at a time.</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <h3>Lessons Completed</h3>
+            <div class="stat-value"><span id="completed-count">0</span>/12</div>
+          </div>
+          <div class="stat-card">
+            <h3>Total XP</h3>
+            <div class="stat-value" id="xp-count">0</div>
+          </div>
+          <div class="stat-card">
+            <h3>Current Streak</h3>
+            <div class="stat-value"><span id="streak-count">0</span> 🔥</div>
+          </div>
+          <div class="stat-card">
+            <h3>Level</h3>
+            <div class="stat-value" id="level-count">1</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Course Progress</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+          </div>
+        </div>
+
+        <div class="lessons-grid" id="lessons"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script type="module" src="js/core.js"></script>
+  <script>
+    const lessons = [
+      {id: 1, title: "Variables & Data Types", xp: 25, diff: "easy", time: "15 min"},
+      {id: 2, title: "Functions", xp: 30, diff: "easy", time: "20 min"},
+      {id: 3, title: "Control Flow", xp: 30, diff: "easy", time: "20 min"},
+      {id: 4, title: "Loops", xp: 35, diff: "easy", time: "25 min"},
+      {id: 5, title: "Arrays", xp: 35, diff: "easy", time: "25 min"},
+      {id: 6, title: "Objects", xp: 40, diff: "easy", time: "30 min"},
+      {id: 7, title: "DOM Manipulation", xp: 45, diff: "medium", time: "35 min"},
+      {id: 8, title: "Events & Forms", xp: 45, diff: "medium", time: "35 min"},
+      {id: 9, title: "Array Methods", xp: 50, diff: "medium", time: "40 min"},
+      {id: 10, title: "Async JS & Promises", xp: 60, diff: "medium", time: "45 min"},
+      {id: 11, title: "LocalStorage & State", xp: 50, diff: "medium", time: "40 min"},
+      {id: 12, title: "Final Project: Todo App", xp: 100, diff: "hard", time: "60 min"}
+    ];
+
+    const completed = JSON.parse(localStorage.getItem('runjs_completed') || '[]');
+    const xp = parseInt(localStorage.getItem('runjs_xp') || '0');
+    const streak = parseInt(localStorage.getItem('runjs_streak') || '0');
+    const level = Math.floor(xp / 100) + 1;
+    
+    document.getElementById('completed-count').textContent = completed.filter(id => id <= 12).length;
+    document.getElementById('xp-count').textContent = xp;
+    document.getElementById('streak-count').textContent = streak;
+    document.getElementById('level-count').textContent = level;
+    
+    const progress = (completed.filter(id => id <= 12).length / 12 * 100).toFixed(0);
+    document.getElementById('progress').style.width = progress + '%';
+    document.getElementById('progress-percent').textContent = progress + '%';
+
+    const grid = document.getElementById('lessons');
+    const nextLessonId = lessons.find(l => !completed.includes(l.id))?.id || 13;
+    
+    lessons.forEach(lesson => {
+      const done = completed.includes(lesson.id);
+      const locked = lesson.id > nextLessonId;
+      const isNext = lesson.id === nextLessonId;
+      
+      const card = document.createElement('div');
+      card.className = 'lesson-card' + (done ? ' completed' : '') + (locked ? ' locked' : '') + (isNext ? ' continue-card' : '');
+      
+      card.innerHTML = `
+        <div class="lesson-num">LESSON ${String(lesson.id).padStart(2, '0')}</div>
+        <h3 class="lesson-title">${isNext ? '▶ Continue: ' : ''}${lesson.title}</h3>
+        <div class="lesson-meta">
+          <span class="lesson-badge">${lesson.diff}</span>
+          <span class="lesson-badge">${lesson.xp} XP</span>
+          <span class="lesson-badge">${lesson.time}</span>
+        </div>
+      `;
+      
+      if (!locked) {
+        card.onclick = () => location.href = `lesson-${String(lesson.id).padStart(2, '0')}.html`;
+      }
+      
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+                                   </html>
